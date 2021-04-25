@@ -1,0 +1,28 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+
+    implementation 'com.github.javaparser:javaparser-symbol-solver-core:3.20.2'
+    implementation 'com.github.javaparser:javaparser-core:3.20.2'
+    implementation 'com.github.javaparser:javaparser-core-serialization:3.20.2'
+
+    compile 'com.googlecode.json-simple:json-simple:1.1.1'
+
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+    testImplementation 'com.googlecode.json-simple:json-simple:1.1.1'
+}
+
+test {
+    useJUnitPlatform()
+}
