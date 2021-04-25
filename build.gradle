@@ -9,18 +9,24 @@ repositories {
     mavenCentral()
 }
 
+ext{
+    javaparser = '3.20.2'
+    json = '1.1.1'
+}
+
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 
-    implementation 'com.github.javaparser:javaparser-symbol-solver-core:3.20.2'
-    implementation 'com.github.javaparser:javaparser-core:3.20.2'
-    implementation 'com.github.javaparser:javaparser-core-serialization:3.20.2'
+    implementation group: 'com.github.javaparser', name:'javaparser-symbol-solver-core', version:"${javaparser}"
+    testImplementation group: 'com.github.javaparser', name:'javaparser-symbol-solver-core', version:"${javaparser}"
+    implementation group: 'com.github.javaparser', name:'javaparser-core', version:"${javaparser}"
+    testImplementation group: 'com.github.javaparser', name:'javaparser-core', version:"${javaparser}"
+    implementation group: 'com.github.javaparser', name:'javaparser-core-serialization', version:"${javaparser}"
+    testImplementation group: 'com.github.javaparser', name:'javaparser-core-serialization', version:"${javaparser}"
 
-    compile 'com.googlecode.json-simple:json-simple:1.1.1'
-
-    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
-    testImplementation 'com.googlecode.json-simple:json-simple:1.1.1'
+    implementation group: 'com.googlecode.json-simple', name:'json-simple', version:"${json}"
+    testImplementation group: 'com.googlecode.json-simple', name:'json-simple', version:"${json}"
 }
 
 test {
