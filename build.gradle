@@ -27,8 +27,6 @@ dependencies {
 
     implementation group: 'com.googlecode.json-simple', name:'json-simple', version:"${json}"
     testImplementation group: 'com.googlecode.json-simple', name:'json-simple', version:"${json}"
-}
 
-test {
-    useJUnitPlatform()
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
 }

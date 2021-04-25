@@ -1,0 +1,1 @@
+{"fixes":[{"annotation":"javax.annotation.Nullable","method":"","param":"h","location":"CLASS_FIELD","class":"com.uber.Super","pkg":"com.uber","inject":"true","uri":"/Users/nima/Desktop/Injector/tests/field_nullable_simple/src/Super.java"}]}

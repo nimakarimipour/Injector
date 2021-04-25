@@ -1,0 +1,1 @@
+{"fixes":[{"annotation":"javax.annotation.Nullable","method":"test(java.lang.Object)","param":"flag","location":"METHOD_PARAM","class":"com.uber.Super","pkg":"com.uber","inject":"true","uri":"/Users/nima/Desktop/Injector/tests/param_nullable_simple/src/Super.java"}]}

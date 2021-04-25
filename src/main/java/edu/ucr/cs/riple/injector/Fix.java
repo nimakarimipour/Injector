@@ -15,7 +15,7 @@ public class Fix {
     public final String inject;
     public String uri;
 
-    enum KEYS {
+    public enum KEYS {
         PARAM("param"),
         METHOD("method"),
         LOCATION("location"),
