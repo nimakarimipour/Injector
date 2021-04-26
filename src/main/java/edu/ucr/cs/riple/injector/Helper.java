@@ -1,18 +1,14 @@
 package edu.ucr.cs.riple.injector;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.CallableDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
-import com.github.javaparser.ast.body.VariableDeclarator;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 @SuppressWarnings({
   "UnusedVariable",
@@ -46,9 +42,9 @@ public class Helper {
     if (paramTypes.size() != paramsTypesInSignature.size()) return false;
     for (String i : paramsTypesInSignature) {
       String found = null;
-      String last_i = lastName(i);
+      String last_i = simpleName(i);
       for (String j : paramTypes) {
-        String last_j = lastName(j);
+        String last_j = simpleName(j);
         if (j.equals(i) || last_i.equals(last_j)) found = j;
       }
       if (found == null) return false;
@@ -68,7 +64,7 @@ public class Helper {
   }
 
   public static ClassOrInterfaceDeclaration getClassOrInterfaceDeclaration(CompilationUnit cu, String pkg, String name) {
-    String classSimpleName = Helper.lastName(name);
+    String classSimpleName = Helper.simpleName(name);
     if (pkg.equals(Helper.getPackageName(name))) {
       Optional<ClassOrInterfaceDeclaration> optional = cu.getClassByName(classSimpleName);
       if (!optional.isPresent()) {
@@ -93,7 +89,7 @@ public class Helper {
     return null;
   }
 
-  public static String lastName(String name) {
+  public static String simpleName(String name) {
     int index = 0;
     StringBuilder ans = new StringBuilder();
     StringBuilder tmp = new StringBuilder();

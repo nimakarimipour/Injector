@@ -91,16 +91,24 @@ public class InjectorMachine {
         return success;
     }
 
-    private static void addAnnotation(NodeWithAnnotations<?> node, String annotName){
+    private static void applyAnnotation(NodeWithAnnotations<?> node, String annotName, boolean inject) {
+        final String annotSimpleName = Helper.simpleName(annotName);
         NodeList<AnnotationExpr> annots = node.getAnnotations();
+        AnnotationExpr existingAnnot = null;
         boolean exists = false;
-        for(AnnotationExpr annot: annots){
-            if(annot.getNameAsString().equals(annotName)){
+        for (AnnotationExpr annot : annots) {
+            String thisAnnotName = annot.getNameAsString();
+            if (thisAnnotName.equals(annotName) || thisAnnotName.equals(annotSimpleName)) {
                 exists = true;
+                existingAnnot = annot;
             }
         }
-        if(!exists){
-            node.addAnnotation(annotName);
+        if(inject){
+            if(!exists) {
+                node.addAnnotation(annotSimpleName);
+            }
+        }else {
+            annots.remove(existingAnnot);
         }
     }
 
@@ -114,7 +122,7 @@ public class InjectorMachine {
                     if (p instanceof Parameter) {
                         Parameter param = (Parameter) p;
                         if (param.getName().toString().equals(fix.param)) {
-                            addAnnotation(param, Helper.lastName(fix.annotation));
+                            applyAnnotation(param, fix.annotation, Boolean.parseBoolean(fix.inject));
                             success[0] = true;
                         }
                     }
@@ -131,7 +139,7 @@ public class InjectorMachine {
                 bodyDeclaration -> bodyDeclaration.ifMethodDeclaration(
                         methodDeclaration -> {
                             if(Helper.matchesMethodSignature(methodDeclaration, fix.method)){
-                                addAnnotation(methodDeclaration, Helper.lastName(fix.annotation));
+                                applyAnnotation(methodDeclaration, fix.annotation, Boolean.parseBoolean(fix.inject));
                                 success[0] = true;
                             }
                         }));
@@ -150,7 +158,7 @@ public class InjectorMachine {
                                             fieldDeclaration.asFieldDeclaration().getVariables();
                                     for (VariableDeclarator v : vars) {
                                         if (v.getName().toString().equals(fix.param)) {
-                                            addAnnotation(fieldDeclaration, Helper.lastName(fix.annotation));
+                                            applyAnnotation(fieldDeclaration, fix.annotation, Boolean.parseBoolean(fix.inject));
                                             success[0] = true;
                                             break;
                                         }
@@ -162,7 +170,7 @@ public class InjectorMachine {
     private void log(String className, boolean fail) {
         if (fail) System.out.print("\u001B[31m");
         else System.out.print("\u001B[32m");
-        System.out.printf("Processing %-50s", Helper.lastName(className));
+        System.out.printf("Processing %-50s", Helper.simpleName(className));
         if (fail) System.out.println("✘ (Skipped)");
         else System.out.println("\u2713");
         System.out.print("\u001B[0m");

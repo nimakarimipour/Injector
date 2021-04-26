@@ -927,6 +927,144 @@ public class BasicTest {
                 "true"))
         .start();
   }
+
+  @Test
+  public void remove_annot_return_nullable(){
+    String rootName = "remove_annot_return_nullable";
+    new InjectorTestHelper()
+            .setRootPath(System.getProperty("user.dir") + "/tests/" + rootName)
+            .addInput(
+                    "Super.java",
+                    "package com.uber;",
+                    "import javax.annotation.Nullable;",
+                    "public class Super {",
+                    "   @Nullable() Object test(@javax.annotation.Nullable Object o) {",
+                    "   }",
+                    "}")
+            .expectOutput(
+                    "Super.java",
+                    "package com.uber;",
+                    "import javax.annotation.Nullable;",
+                    "public class Super {",
+                    "   Object test(@javax.annotation.Nullable Object o) {",
+                    "   }",
+                    "}")
+            .addFixes(
+                    new Fix(
+                            "javax.annotation.Nullable",
+                            "test(@javax.annotation.Nullable java.lang.Object)",
+                            "",
+                            "METHOD_RETURN",
+                            "com.uber.Super",
+                            "com.uber",
+                            "Super.java",
+                            "false"))
+            .start();
+  }
+
+  @Test
+  public void remove_annot_param(){
+    String rootName = "remove_annot_param";
+    new InjectorTestHelper()
+            .setRootPath(System.getProperty("user.dir") + "/tests/" + rootName)
+            .addInput(
+                    "Super.java",
+                    "package com.uber;",
+                    "import javax.annotation.Nullable;",
+                    "public class Super {",
+                    "   @Nullable() Object test(@Nullable Object o) {",
+                    "   }",
+                    "}")
+            .expectOutput(
+                    "Super.java",
+                    "package com.uber;",
+                    "import javax.annotation.Nullable;",
+                    "public class Super {",
+                    "   @Nullable() Object test(Object o) {",
+                    "   }",
+                    "}")
+            .addFixes(
+                    new Fix(
+                            "javax.annotation.Nullable",
+                            "test(@javax.annotation.Nullable java.lang.Object)",
+                            "o",
+                            "METHOD_PARAM",
+                            "com.uber.Super",
+                            "com.uber",
+                            "Super.java",
+                            "false"))
+            .start();
+  }
+
+  @Test
+  public void remove_annot_param_full_name(){
+    String rootName = "remove_annot_param_full_name";
+    new InjectorTestHelper()
+            .setRootPath(System.getProperty("user.dir") + "/tests/" + rootName)
+            .addInput(
+                    "Super.java",
+                    "package com.uber;",
+                    "import javax.annotation.Nullable;",
+                    "public class Super {",
+                    "   @Nullable() Object test(@javax.annotation.Nullable Object o) {",
+                    "   }",
+                    "}")
+            .expectOutput(
+                    "Super.java",
+                    "package com.uber;",
+                    "import javax.annotation.Nullable;",
+                    "public class Super {",
+                    "   @Nullable() Object test(Object o) {",
+                    "   }",
+                    "}")
+            .addFixes(
+                    new Fix(
+                            "javax.annotation.Nullable",
+                            "test(@javax.annotation.Nullable java.lang.Object)",
+                            "o",
+                            "METHOD_PARAM",
+                            "com.uber.Super",
+                            "com.uber",
+                            "Super.java",
+                            "false"))
+            .start();
+  }
+
+  @Test
+  public void remove_annot_field(){
+    String rootName = "remove_annot_field";
+    new InjectorTestHelper()
+            .setRootPath(System.getProperty("user.dir") + "/tests/" + rootName)
+            .addInput(
+                    "Super.java",
+                    "package com.uber;",
+                    "import javax.annotation.Nullable;",
+                    "public class Super {",
+                    "   @Nullable() Object f;",
+                    "   @Nullable() Object test(@javax.annotation.Nullable Object o) {",
+                    "   }",
+                    "}")
+            .expectOutput(
+                    "Super.java",
+                    "package com.uber;",
+                    "import javax.annotation.Nullable;",
+                    "public class Super {",
+                    "   Object f;",
+                    "   @Nullable() Object test(@javax.annotation.Nullable Object o) {",
+                    "   }",
+                    "}")
+            .addFixes(
+                    new Fix(
+                            "javax.annotation.Nullable",
+                            "",
+                            "f",
+                            "CLASS_FIELD",
+                            "com.uber.Super",
+                            "com.uber",
+                            "Super.java",
+                            "false"))
+            .start();
+  }
 }
 
 // todo: test these later:
