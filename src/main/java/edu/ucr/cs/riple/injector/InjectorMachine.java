@@ -12,6 +12,7 @@ import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
@@ -37,11 +38,10 @@ public class InjectorMachine {
         String pathToFileDirectory = uri.substring(0, uri.lastIndexOf("/"));
         try {
             Files.createDirectories(Paths.get(pathToFileDirectory + "/"));
-            try (Writer writer = Files.newBufferedWriter(Paths.get(uri), Charset.defaultCharset())) {
-                writer.write(changed.toString());
-                writer.flush();
-                writer.close();
-            }
+            FileWriter writer = new FileWriter(uri);
+            writer.write(changed.toString());
+            writer.flush();
+            writer.close();
         } catch (IOException e) {
             throw new RuntimeException("Something terrible happened.");
         }
