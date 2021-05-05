@@ -103,7 +103,7 @@ public class InjectorMachine {
         }
         if(inject){
             if(!exists) {
-                node.addAnnotation(annotSimpleName);
+                node.addMarkerAnnotation(annotSimpleName);
             }
         }else {
             annots.remove(existingAnnot);
