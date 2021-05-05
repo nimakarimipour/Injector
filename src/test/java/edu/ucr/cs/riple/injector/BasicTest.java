@@ -935,7 +935,6 @@ public class BasicTest {
             .start();
   }
 
-
   @Test
   public void remove_redundant_new_keyword() {
     String rootName = "remove_redundant_new_keyword";
@@ -1160,18 +1159,9 @@ public class BasicTest {
 
 //  For method pick (multiple Generics)
 //  public <A extends AbstractValue<A>, S extends Store<S>, T extends TransferFunction<A, S>>
-//  S test(TransferFunction<A, S> s, Context context, T transfer) {
-//    return null;
-//  }
+//  S test(TransferFunction<A, S> s, Context context, T transfer);
 
 // For method pick (For Generics as argument)
 // ArrayList<String> vs ArrayList<Object>
-
 //  For method pick (For Class<T> as argument
-//  public static <T extends Shape> void drawWithShadow(T shape, Class<T> shapeClass) {
-//    // The shadow must be the same shape as what's passed in
-//    T shadow = shapeClass.newInstance();
-//    // Set the shadow's properties to from the shape...
-//    shadow.draw(); // First, draw the shadow
-//    shape.draw();  // Now draw the shape on top of it
-//  }
+//  public static <T extends Shape> void drawWithShadow(T shape, Class<T> shapeClass);
