@@ -9,6 +9,7 @@ import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
+import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -37,7 +38,7 @@ public class InjectorMachine {
         try {
             Files.createDirectories(Paths.get(pathToFileDirectory + "/"));
             FileWriter writer = new FileWriter(uri);
-            writer.write(changed.toString());
+            writer.write(LexicalPreservingPrinter.print(changed));
             writer.flush();
             writer.close();
         } catch (IOException e) {
@@ -49,7 +50,7 @@ public class InjectorMachine {
         CompilationUnit tree;
         for (WorkList workList : workLists) {
             try {
-                tree = StaticJavaParser.parse(new File(workList.getUri()));
+                tree = LexicalPreservingPrinter.setup(StaticJavaParser.parse(new File(workList.getUri())));
                 for (Fix fix : workList.getFixes()) {
                     boolean success = applyFix(tree, fix);
                     if(success) processed++;

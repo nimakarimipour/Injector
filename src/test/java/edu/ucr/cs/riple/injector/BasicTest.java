@@ -277,7 +277,7 @@ public class BasicTest {
             "package com.uber;",
             "public class Super {",
             "   protected CGNode getTargetForCall(",
-            "     CGNode caller[], CallSiteReference[][][] site, IClass recv, InstanceKey iKey[][]) {",
+            "     CGNode caller[], CallSiteReference[][][] site, IClass recv, InstanceKey[][] iKey) {",
             "     return null;",
             "   }",
             "}")
@@ -287,7 +287,7 @@ public class BasicTest {
             "import javax.annotation.Nullable;",
             "public class Super {",
             "   @Nullable protected CGNode getTargetForCall(",
-            "     CGNode[] caller, CallSiteReference[][][] site, IClass recv, InstanceKey[][] iKey) {",
+            "     CGNode caller[], CallSiteReference[][][] site, IClass recv, InstanceKey[][] iKey) {",
             "     return null;",
             "   }",
             "}")
