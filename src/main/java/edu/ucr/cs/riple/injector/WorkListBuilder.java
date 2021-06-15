@@ -24,7 +24,6 @@ public class WorkListBuilder {
     }
 
     private void readFixes() {
-        System.out.println("FILE PATH IS: " + filePath);
         try {
             BufferedReader bufferedReader =
                     Files.newBufferedReader(Paths.get(filePath), Charset.defaultCharset());

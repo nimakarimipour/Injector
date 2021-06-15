@@ -7,11 +7,12 @@ group 'edu.ucr.cs.riple'
 version '1.0-SNAPSHOT'
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
 ext{
-    javaparser = '3.20.2'
+    javaparser = '3.24.2-SNAPSHOT'
     json = '1.1.1'
 }
 
