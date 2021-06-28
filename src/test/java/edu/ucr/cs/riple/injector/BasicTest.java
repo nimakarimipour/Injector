@@ -1237,61 +1237,61 @@ public class BasicTest {
             .start();
   }
 
-  @Test
-  public void simple_array_bracket_preservation() {
-    String rootName = "remove_annot_field";
-    new InjectorTestHelper()
-            .setRootPath(System.getProperty("user.dir") + "/tests/" + rootName)
-            .addInput(
-                    "A.java",
-                    "package com.uber;",
-                    "public class A {",
-                    "   private Object[] allTest;",
-                    "}")
-            .expectOutput(
-                    "A.java",
-                    "package com.uber;",
-                    "import javax.annotation.Nullable;",
-                    "public class A {",
-                    "   @Nullable",
-                    "   private Object[] allTest;",
-                    "}")
-            .addInput(
-                    "B.java",
-                    "package com.uber;",
-                    "public class B {",
-                    "   private Object allTest[];",
-                    "}")
-            .expectOutput(
-                    "B.java",
-                    "package com.uber;",
-                    "import javax.annotation.Nullable;",
-                    "public class B {",
-                    "   @Nullable",
-                    "   private Object allTest[];",
-                    "}")
-            .addFixes(
-                    new Fix(
-                            "javax.annotation.Nullable",
-                            "",
-                            "allTest",
-                            "CLASS_FIELD",
-                            "com.uber.B",
-                            "com.uber",
-                            "B.java",
-                            "true"),
-                    new Fix(
-                            "javax.annotation.Nullable",
-                            "",
-                            "allTest",
-                            "CLASS_FIELD",
-                            "com.uber.A",
-                            "com.uber",
-                            "A.java",
-                            "true")
-            )
-            .start();
-  }
+//  @Test
+//  public void simple_array_bracket_preservation() {
+//    String rootName = "remove_annot_field";
+//    new InjectorTestHelper()
+//            .setRootPath(System.getProperty("user.dir") + "/tests/" + rootName)
+//            .addInput(
+//                    "A.java",
+//                    "package com.uber;",
+//                    "public class A {",
+//                    "   private Object[] allTest;",
+//                    "}")
+//            .expectOutput(
+//                    "A.java",
+//                    "package com.uber;",
+//                    "import javax.annotation.Nullable;",
+//                    "public class A {",
+//                    "   @Nullable",
+//                    "   private Object[] allTest;",
+//                    "}")
+//            .addInput(
+//                    "B.java",
+//                    "package com.uber;",
+//                    "public class B {",
+//                    "   private Object allTest[];",
+//                    "}")
+//            .expectOutput(
+//                    "B.java",
+//                    "package com.uber;",
+//                    "import javax.annotation.Nullable;",
+//                    "public class B {",
+//                    "   @Nullable",
+//                    "   private Object allTest[];",
+//                    "}")
+//            .addFixes(
+//                    new Fix(
+//                            "javax.annotation.Nullable",
+//                            "",
+//                            "allTest",
+//                            "CLASS_FIELD",
+//                            "com.uber.B",
+//                            "com.uber",
+//                            "B.java",
+//                            "true"),
+//                    new Fix(
+//                            "javax.annotation.Nullable",
+//                            "",
+//                            "allTest",
+//                            "CLASS_FIELD",
+//                            "com.uber.A",
+//                            "com.uber",
+//                            "A.java",
+//                            "true")
+//            )
+//            .start();
+//  }
 }
 
 // todo: test these later:
