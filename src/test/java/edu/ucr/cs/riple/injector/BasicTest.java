@@ -64,9 +64,7 @@ public class BasicTest {
                                     "",
                                     "METHOD_RETURN",
                                     "com.uber.Super",
-                                    "com.uber",
                                     "Super.java",
-                                    "true",
                                     "true"),
                             new Fix(
                                     "javax.annotation.Nullable",
@@ -74,9 +72,7 @@ public class BasicTest {
                                     "",
                                     "METHOD_RETURN",
                                     "com.uber.Superb",
-                                    "com.uber",
                                     "com/Superb.java",
-                                    "true",
                                     "true"));
     injectorTestHelper.start();
     injectorTestHelper = null;
@@ -126,9 +122,7 @@ public class BasicTest {
                             "",
                             "METHOD_RETURN",
                             "com.uber.Super.SuperInner",
-                            "com.uber",
                             "Super.java",
-                            "true",
                             "true"))
             .start();
   }
@@ -181,9 +175,7 @@ public class BasicTest {
                             "",
                             "METHOD_RETURN",
                             "com.uber.Super",
-                            "com.uber",
                             "Super.java",
-                            "true",
                             "true"),
                     new Fix(
                             "javax.annotation.Nullable",
@@ -191,9 +183,7 @@ public class BasicTest {
                             "name",
                             "METHOD_PARAM",
                             "com.uber.Super",
-                            "com.uber",
                             "Super.java",
-                            "true",
                             "true"))
             .start();
   }
@@ -257,9 +247,7 @@ public class BasicTest {
                             "",
                             "METHOD_RETURN",
                             "com.uber.Super",
-                            "com.uber",
                             "Super.java",
-                            "true",
                             "true"),
                     new Fix(
                             "javax.annotation.Nullable",
@@ -267,9 +255,7 @@ public class BasicTest {
                             "",
                             "METHOD_RETURN",
                             "com.uber.Super",
-                            "com.uber",
                             "Super.java",
-                            "true",
                             "true"))
             .start();
   }
@@ -306,9 +292,7 @@ public class BasicTest {
                             "",
                             "METHOD_RETURN",
                             "com.uber.Super",
-                            "com.uber",
                             "Super.java",
-                            "true",
                             "true"))
             .start();
   }
@@ -343,9 +327,7 @@ public class BasicTest {
                             "",
                             "METHOD_RETURN",
                             "com.uber.Super",
-                            "com.uber",
                             "Super.java",
-                            "true",
                             "true"))
             .start();
   }
@@ -388,9 +370,7 @@ public class BasicTest {
                             "",
                             "METHOD_RETURN",
                             "com.uber.MethodDispatchContext",
-                            "com.uber",
                             "TargetMethodContextSelector.java",
-                            "true",
                             "true"))
             .start();
   }
@@ -432,9 +412,7 @@ public class BasicTest {
                             "flag",
                             "METHOD_PARAM",
                             "com.uber.Super",
-                            "com.uber",
                             "Super.java",
-                            "true",
                             "true"))
             .start();
   }
@@ -476,9 +454,7 @@ public class BasicTest {
                             "flag",
                             "METHOD_PARAM",
                             "com.uber.Super",
-                            "com.uber",
                             "Super.java",
-                            "true",
                             "true"))
             .start();
   }
@@ -527,9 +503,7 @@ public class BasicTest {
                             "bootstrap",
                             "METHOD_PARAM",
                             "com.uber.SSAInstructionFactory",
-                            "com.uber",
                             "SSAInstructionFactory.java",
-                            "true",
                             "true"))
             .start();
   }
@@ -574,9 +548,7 @@ public class BasicTest {
                             "heapExclude",
                             "METHOD_PARAM",
                             "com.uber.ModRef",
-                            "com.uber",
                             "ModRef.java",
-                            "true",
                             "true"))
             .start();
   }
@@ -641,9 +613,7 @@ public class BasicTest {
                             "constants",
                             "METHOD_PARAM",
                             "com.uber.ModRef",
-                            "com.uber",
                             "ModRef.java",
-                            "true",
                             "true"))
             .start();
   }
@@ -682,9 +652,7 @@ public class BasicTest {
                             "queue",
                             "METHOD_PARAM",
                             "com.uber.WeakKeyReference",
-                            "com.uber",
                             "WeakKeyReference.java",
-                            "true",
                             "true"))
             .start();
   }
@@ -722,9 +690,7 @@ public class BasicTest {
                             "h",
                             "CLASS_FIELD",
                             "com.uber.Super",
-                            "com.uber",
                             "Super.java",
-                            "true",
                             "true"))
             .start();
   }
@@ -771,9 +737,7 @@ public class BasicTest {
                             "",
                             "METHOD_RETURN",
                             "com.uber.Super",
-                            "com.uber",
                             "Super.java",
-                            "true",
                             "true"))
             .start();
   }
@@ -789,9 +753,7 @@ public class BasicTest {
                     "",
                     "METHOD_RETURN",
                     "com.uber.Super",
-                    "com.uber",
                     "Super.java",
-                    "true",
                     "true");
 
     new InjectorTestHelper()
@@ -861,9 +823,7 @@ public class BasicTest {
                             "",
                             "METHOD_RETURN",
                             "com.uber.Super",
-                            "com.uber",
                             "Super.java",
-                            "true",
                             "true"))
             .start();
   }
@@ -1032,9 +992,7 @@ public class BasicTest {
                             "",
                             "METHOD_RETURN",
                             "com.uber.Super",
-                            "com.uber",
                             "Super.java",
-                            "true",
                             "true"))
             .start();
   }
@@ -1080,9 +1038,7 @@ public class BasicTest {
                             "",
                             "METHOD_RETURN",
                             "com.uber.Super",
-                            "com.uber",
                             "Super.java",
-                            "true",
                             "true"))
             .start();
   }
@@ -1115,9 +1071,7 @@ public class BasicTest {
                             "",
                             "METHOD_RETURN",
                             "com.uber.Super",
-                            "com.uber",
                             "Super.java",
-                            "true",
                             "true"))
             .start();
   }
@@ -1150,10 +1104,8 @@ public class BasicTest {
                             "",
                             "METHOD_RETURN",
                             "com.uber.Super",
-                            "com.uber",
                             "Super.java",
-                            "false",
-                            "true"))
+                            "false"))
             .start();
   }
 
@@ -1185,10 +1137,8 @@ public class BasicTest {
                             "o",
                             "METHOD_PARAM",
                             "com.uber.Super",
-                            "com.uber",
                             "Super.java",
-                            "false",
-                            "true"))
+                            "false"))
             .start();
   }
 
@@ -1220,10 +1170,8 @@ public class BasicTest {
                             "o",
                             "METHOD_PARAM",
                             "com.uber.Super",
-                            "com.uber",
                             "Super.java",
-                            "false",
-                            "true"))
+                            "false"))
             .start();
   }
 
@@ -1257,10 +1205,8 @@ public class BasicTest {
                             "f",
                             "CLASS_FIELD",
                             "com.uber.Super",
-                            "com.uber",
                             "Super.java",
-                            "false",
-                            "true"))
+                            "false"))
             .start();
   }
 

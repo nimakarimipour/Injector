@@ -11,10 +11,11 @@ public class Fix {
     public final String param;
     public final String location;
     public final String className;
-    public final String pkg;
     public final String inject;
-    public final String compulsory;
     public String uri;
+    public String compulsory;
+    public String index;
+    public String pkg;
 
     public enum KEYS {
         PARAM("param"),
@@ -25,6 +26,7 @@ public class Fix {
         URI("uri"),
         INJECT("inject"),
         ANNOTATION("annotation"),
+        INDEX("index"),
         COMPULSORY("compulsory");
         public final String label;
 
@@ -44,35 +46,32 @@ public class Fix {
             String param,
             String location,
             String className,
-            String pkg,
             String uri,
-            String inject,
-            String compulsory) {
+            String inject) {
         this.annotation = annotation;
         this.method = method;
         this.param = param;
         this.location = location;
         this.className = className;
-        this.pkg = pkg;
         this.uri = uri;
         this.inject = inject;
-        this.compulsory = compulsory;
     }
 
-    public static Fix createFromJson(JSONObject fix) {
-        String uri = fix.get(KEYS.URI.label).toString();
+    public static Fix createFromJson(JSONObject fixJson) {
+        String uri = fixJson.get(KEYS.URI.label).toString();
         String file = "file:/";
         if (uri.contains(file)) uri = uri.substring(uri.indexOf(file) + file.length());
-        return new Fix(
-                fix.get(KEYS.ANNOTATION.label).toString(),
-                fix.get(KEYS.METHOD.label).toString(),
-                fix.get(KEYS.PARAM.label).toString(),
-                fix.get(KEYS.LOCATION.label).toString(),
-                fix.get(KEYS.CLASS.label).toString(),
-                fix.get(KEYS.PKG.label).toString(),
+        String clazz = fixJson.get(KEYS.CLASS.label).toString();
+        Fix fix = new Fix(
+                fixJson.get(KEYS.ANNOTATION.label).toString(),
+                fixJson.get(KEYS.METHOD.label).toString(),
+                fixJson.get(KEYS.PARAM.label).toString(),
+                fixJson.get(KEYS.LOCATION.label).toString(),
+                clazz,
                 uri,
-                fix.get(KEYS.INJECT.label).toString(),
-                fix.get(KEYS.COMPULSORY.label).toString());
+                fixJson.get(KEYS.INJECT.label).toString());
+        fix.pkg = clazz.contains(".") ? clazz.substring(0, clazz.lastIndexOf(".")) : "";
+        return fix;
     }
 
     @Override
@@ -102,6 +101,9 @@ public class Fix {
                 + ", \n\turi='"
                 + uri
                 + '\''
+                + ", \n\tindex='"
+                + index
+                + '\''
                 + ", \n\tcompulsory='"
                 + compulsory
                 + '\''
@@ -121,12 +123,13 @@ public class Fix {
                 && Objects.equals(pkg, fix.pkg)
                 && Objects.equals(inject, fix.inject)
                 && Objects.equals(uri, fix.uri)
-                && Objects.equals(compulsory, fix.uri);
+                && Objects.equals(index, fix.index)
+                && Objects.equals(compulsory, fix.compulsory);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(annotation, method, param, location, className, pkg, inject, uri, compulsory);
+        return Objects.hash(annotation, method, param, location, className, pkg, inject, uri, compulsory, index);
     }
 
     public JSONObject getJson() {
@@ -140,17 +143,26 @@ public class Fix {
         res.put(KEYS.INJECT.label, inject);
         res.put(KEYS.URI.label, uri);
         res.put(KEYS.COMPULSORY.label, compulsory);
+        res.put(KEYS.INDEX.label, index);
         return res;
     }
 
     public Fix duplicate() {
-        return new Fix(annotation, method, param, location, className, pkg, uri, inject, compulsory);
+        Fix fix = new Fix(annotation, method, param, location, className, uri, inject);
+        fix.index = index;
+        fix.compulsory = compulsory;
+        fix.pkg = pkg;
+        return fix;
     }
 
     public static Fix fromCSVLine(String line, String delimiter) {
         String[] infos = line.split(delimiter);
-        return new Fix(
-                infos[8], infos[3], infos[4], infos[0], infos[2], infos[1], infos[6], infos[10], infos[9]);
+        Fix fix = new Fix(
+                infos[8], infos[3], infos[4], infos[0], infos[2], infos[6], infos[10]);
+        fix.pkg = infos[1];
+        fix.compulsory = infos[9];
+        fix.index = infos[5];
+        return fix;
     }
 }
 
