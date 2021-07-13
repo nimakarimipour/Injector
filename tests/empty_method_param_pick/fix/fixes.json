@@ -1,1 +1,1 @@
-{"fixes":[{"annotation":"javax.annotation.Nullable","method":"test()","param":"","location":"METHOD_RETURN","class":"com.uber.Super","pkg":"com.uber","inject":"true","uri":"/Users/nima/Developer/Injector/tests/empty_method_param_pick/src/Super.java"}]}
+{"fixes":[{"annotation":"javax.annotation.Nullable","compulsory":"true","method":"test()","param":"","location":"METHOD_RETURN","class":"com.uber.Super","pkg":"com.uber","inject":"true","uri":"/Users/nima/Developer/Injector/tests/empty_method_param_pick/src/Super.java"}]}

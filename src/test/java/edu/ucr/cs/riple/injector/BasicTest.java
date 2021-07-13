@@ -66,6 +66,7 @@ public class BasicTest {
                                     "com.uber.Super",
                                     "com.uber",
                                     "Super.java",
+                                    "true",
                                     "true"),
                             new Fix(
                                     "javax.annotation.Nullable",
@@ -75,6 +76,7 @@ public class BasicTest {
                                     "com.uber.Superb",
                                     "com.uber",
                                     "com/Superb.java",
+                                    "true",
                                     "true"));
     injectorTestHelper.start();
     injectorTestHelper = null;
@@ -126,6 +128,7 @@ public class BasicTest {
                             "com.uber.Super.SuperInner",
                             "com.uber",
                             "Super.java",
+                            "true",
                             "true"))
             .start();
   }
@@ -180,6 +183,7 @@ public class BasicTest {
                             "com.uber.Super",
                             "com.uber",
                             "Super.java",
+                            "true",
                             "true"),
                     new Fix(
                             "javax.annotation.Nullable",
@@ -189,6 +193,7 @@ public class BasicTest {
                             "com.uber.Super",
                             "com.uber",
                             "Super.java",
+                            "true",
                             "true"))
             .start();
   }
@@ -254,6 +259,7 @@ public class BasicTest {
                             "com.uber.Super",
                             "com.uber",
                             "Super.java",
+                            "true",
                             "true"),
                     new Fix(
                             "javax.annotation.Nullable",
@@ -263,6 +269,7 @@ public class BasicTest {
                             "com.uber.Super",
                             "com.uber",
                             "Super.java",
+                            "true",
                             "true"))
             .start();
   }
@@ -301,6 +308,7 @@ public class BasicTest {
                             "com.uber.Super",
                             "com.uber",
                             "Super.java",
+                            "true",
                             "true"))
             .start();
   }
@@ -337,6 +345,7 @@ public class BasicTest {
                             "com.uber.Super",
                             "com.uber",
                             "Super.java",
+                            "true",
                             "true"))
             .start();
   }
@@ -381,6 +390,7 @@ public class BasicTest {
                             "com.uber.MethodDispatchContext",
                             "com.uber",
                             "TargetMethodContextSelector.java",
+                            "true",
                             "true"))
             .start();
   }
@@ -424,6 +434,7 @@ public class BasicTest {
                             "com.uber.Super",
                             "com.uber",
                             "Super.java",
+                            "true",
                             "true"))
             .start();
   }
@@ -467,6 +478,7 @@ public class BasicTest {
                             "com.uber.Super",
                             "com.uber",
                             "Super.java",
+                            "true",
                             "true"))
             .start();
   }
@@ -517,6 +529,7 @@ public class BasicTest {
                             "com.uber.SSAInstructionFactory",
                             "com.uber",
                             "SSAInstructionFactory.java",
+                            "true",
                             "true"))
             .start();
   }
@@ -563,6 +576,7 @@ public class BasicTest {
                             "com.uber.ModRef",
                             "com.uber",
                             "ModRef.java",
+                            "true",
                             "true"))
             .start();
   }
@@ -629,6 +643,7 @@ public class BasicTest {
                             "com.uber.ModRef",
                             "com.uber",
                             "ModRef.java",
+                            "true",
                             "true"))
             .start();
   }
@@ -669,6 +684,7 @@ public class BasicTest {
                             "com.uber.WeakKeyReference",
                             "com.uber",
                             "WeakKeyReference.java",
+                            "true",
                             "true"))
             .start();
   }
@@ -708,6 +724,7 @@ public class BasicTest {
                             "com.uber.Super",
                             "com.uber",
                             "Super.java",
+                            "true",
                             "true"))
             .start();
   }
@@ -756,6 +773,7 @@ public class BasicTest {
                             "com.uber.Super",
                             "com.uber",
                             "Super.java",
+                            "true",
                             "true"))
             .start();
   }
@@ -773,6 +791,7 @@ public class BasicTest {
                     "com.uber.Super",
                     "com.uber",
                     "Super.java",
+                    "true",
                     "true");
 
     new InjectorTestHelper()
@@ -844,6 +863,7 @@ public class BasicTest {
                             "com.uber.Super",
                             "com.uber",
                             "Super.java",
+                            "true",
                             "true"))
             .start();
   }
@@ -1014,6 +1034,7 @@ public class BasicTest {
                             "com.uber.Super",
                             "com.uber",
                             "Super.java",
+                            "true",
                             "true"))
             .start();
   }
@@ -1061,6 +1082,7 @@ public class BasicTest {
                             "com.uber.Super",
                             "com.uber",
                             "Super.java",
+                            "true",
                             "true"))
             .start();
   }
@@ -1095,6 +1117,7 @@ public class BasicTest {
                             "com.uber.Super",
                             "com.uber",
                             "Super.java",
+                            "true",
                             "true"))
             .start();
   }
@@ -1129,7 +1152,8 @@ public class BasicTest {
                             "com.uber.Super",
                             "com.uber",
                             "Super.java",
-                            "false"))
+                            "false",
+                            "true"))
             .start();
   }
 
@@ -1163,7 +1187,8 @@ public class BasicTest {
                             "com.uber.Super",
                             "com.uber",
                             "Super.java",
-                            "false"))
+                            "false",
+                            "true"))
             .start();
   }
 
@@ -1197,7 +1222,8 @@ public class BasicTest {
                             "com.uber.Super",
                             "com.uber",
                             "Super.java",
-                            "false"))
+                            "false",
+                            "true"))
             .start();
   }
 
@@ -1233,7 +1259,8 @@ public class BasicTest {
                             "com.uber.Super",
                             "com.uber",
                             "Super.java",
-                            "false"))
+                            "false",
+                            "true"))
             .start();
   }
 
