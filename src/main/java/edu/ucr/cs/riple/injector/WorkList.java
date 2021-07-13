@@ -35,7 +35,7 @@ public class WorkList {
     for (Fix fix : fixes) if (!annotsList.contains(fix.annotation)) annotsList.add(fix.annotation);
   }
 
-  public String className(){
+  public String className() {
     return fixes.get(0).className;
   }
 }

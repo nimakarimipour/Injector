@@ -3,7 +3,7 @@ package edu.ucr.cs.riple.injector;
 import java.util.List;
 
 @SuppressWarnings(
-        "UnusedVariable") // todo: Remove this later, this class is still under construction
+    "UnusedVariable") // todo: Remove this later, this class is still under construction
 public class Injector {
   public final MODE mode;
 
@@ -27,11 +27,11 @@ public class Injector {
     System.out.println("Received " + report.totalNumberOfDistinctFixes + " number of fixes");
     report.processed = new InjectorMachine(workLists, mode).start();
     System.out.println(
-            "Received "
-                    + report.totalNumberOfDistinctFixes
-                    + " fixes and applied "
-                    + report.processed
-                    + " number of fixes");
+        "Received "
+            + report.totalNumberOfDistinctFixes
+            + " fixes and applied "
+            + report.processed
+            + " number of fixes");
 
     return report;
   }
@@ -39,7 +39,7 @@ public class Injector {
   public static class InjectorBuilder {
     private MODE mode = MODE.BATCH;
 
-    public InjectorBuilder setMode(MODE mode){
+    public InjectorBuilder setMode(MODE mode) {
       this.mode = mode;
       return this;
     }

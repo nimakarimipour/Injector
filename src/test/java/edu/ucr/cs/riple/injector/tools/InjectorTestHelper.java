@@ -6,8 +6,6 @@ import edu.ucr.cs.riple.injector.Fix;
 import edu.ucr.cs.riple.injector.Injector;
 import edu.ucr.cs.riple.injector.Report;
 import edu.ucr.cs.riple.injector.WorkListBuilder;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
@@ -19,6 +17,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 @SuppressWarnings("unchecked")
 public class InjectorTestHelper {
@@ -52,12 +52,10 @@ public class InjectorTestHelper {
   }
 
   public void start() {
-    Injector injector =
-        Injector.builder()
-            .setMode(Injector.MODE.TEST)
-            .build();
+    Injector injector = Injector.builder().setMode(Injector.MODE.TEST).build();
     writeFixes();
-    Report report = injector.start(new WorkListBuilder(rootPath + "/fix/fixes.json").getWorkLists());
+    Report report =
+        injector.start(new WorkListBuilder(rootPath + "/fix/fixes.json").getWorkLists());
     System.out.println("Report: " + report);
     for (String key : fileMap.keySet()) {
       String srcFile = readFileToString(key);

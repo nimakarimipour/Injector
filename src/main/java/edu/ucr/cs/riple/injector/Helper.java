@@ -4,7 +4,6 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.CallableDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.Parameter;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -21,22 +20,23 @@ public class Helper {
     int level = 0;
     for (int i = 0; i < signature.length(); i++) {
       char current = signature.charAt(i);
-      if(current == '(') break;
-      switch (current){
-        case '>': ++level;
-        break;
-        case '<': --level;
-        break;
+      if (current == '(') break;
+      switch (current) {
+        case '>':
+          ++level;
+          break;
+        case '<':
+          --level;
+          break;
         default:
-          if(level == 0) ans.append(current);
+          if (level == 0) ans.append(current);
       }
     }
     return ans.toString();
   }
 
   public static boolean matchesMethodSignature(CallableDeclaration methodDecl, String signature) {
-    if (!methodDecl.getName().toString().equals(extractMethodName(signature)))
-      return false;
+    if (!methodDecl.getName().toString().equals(extractMethodName(signature))) return false;
     List<String> paramsTypesInSignature = extractParamTypesOfMethodInString(signature);
     List<String> paramTypes = extractParamTypesOfMethodInString(methodDecl);
     if (paramTypes.size() != paramsTypesInSignature.size()) return false;
@@ -55,15 +55,16 @@ public class Helper {
 
   public static List<String> extractParamTypesOfMethodInString(CallableDeclaration methodDecl) {
     ArrayList<String> paramTypes = new ArrayList<>();
-    for(Object param: methodDecl.getParameters()){
-      if(param instanceof Parameter){
+    for (Object param : methodDecl.getParameters()) {
+      if (param instanceof Parameter) {
         paramTypes.add(((Parameter) param).getType().asString());
       }
     }
     return paramTypes;
   }
 
-  public static ClassOrInterfaceDeclaration getClassOrInterfaceDeclaration(CompilationUnit cu, String pkg, String name) {
+  public static ClassOrInterfaceDeclaration getClassOrInterfaceDeclaration(
+      CompilationUnit cu, String pkg, String name) {
     String classSimpleName = Helper.simpleName(name);
     if (pkg.equals(Helper.getPackageName(name))) {
       Optional<ClassOrInterfaceDeclaration> optional = cu.getClassByName(classSimpleName);
@@ -75,15 +76,21 @@ public class Helper {
       }
     }
     try {
-      List<ClassOrInterfaceDeclaration> options = cu.getLocalDeclarationFromClassname(classSimpleName);
+      List<ClassOrInterfaceDeclaration> options =
+          cu.getLocalDeclarationFromClassname(classSimpleName);
       for (ClassOrInterfaceDeclaration candidate : options) {
         if (candidate.getName().toString().equals(classSimpleName)) {
           return candidate;
         }
       }
-    }catch (NoSuchElementException ignored){ }
-    List<ClassOrInterfaceDeclaration> candidates = cu.findAll(ClassOrInterfaceDeclaration.class, classOrInterfaceDeclaration -> classOrInterfaceDeclaration.getName().toString().equals(classSimpleName));
-    if(candidates.size() > 0){
+    } catch (NoSuchElementException ignored) {
+    }
+    List<ClassOrInterfaceDeclaration> candidates =
+        cu.findAll(
+            ClassOrInterfaceDeclaration.class,
+            classOrInterfaceDeclaration ->
+                classOrInterfaceDeclaration.getName().toString().equals(classSimpleName));
+    if (candidates.size() > 0) {
       return candidates.get(0);
     }
     return null;
@@ -112,12 +119,12 @@ public class Helper {
       }
       index++;
     }
-    if(name.length() > 0) ans.append(tmp);
+    if (name.length() > 0) ans.append(tmp);
     return ans.toString().replaceAll(" ", "");
   }
 
-  public static String getPackageName(String name){
-    if(!name.contains(".")){
+  public static String getPackageName(String name) {
+    if (!name.contains(".")) {
       return null;
     }
     int index = name.lastIndexOf(".");
@@ -125,11 +132,7 @@ public class Helper {
   }
 
   public static List<String> extractParamTypesOfMethodInString(String signature) {
-    signature =
-        signature
-            .substring(signature.indexOf("("))
-            .replace("(", "")
-            .replace(")", "");
+    signature = signature.substring(signature.indexOf("(")).replace("(", "").replace(")", "");
     int index = 0;
     int generic_level = 0;
     List<String> ans = new ArrayList<>();
@@ -138,16 +141,16 @@ public class Helper {
       char c = signature.charAt(index);
       switch (c) {
         case '@':
-          while (signature.charAt(index+1) == ' ' && index + 1 < signature.length()) index++;
+          while (signature.charAt(index + 1) == ' ' && index + 1 < signature.length()) index++;
           int annot_level = 0;
           boolean finished = false;
-          while (!finished && index < signature.length()){
-            if(signature.charAt(index) == '(') ++annot_level;
-            if(signature.charAt(index) == ')') --annot_level;
-            if(signature.charAt(index) == ' ' && annot_level == 0) finished = true;
+          while (!finished && index < signature.length()) {
+            if (signature.charAt(index) == '(') ++annot_level;
+            if (signature.charAt(index) == ')') --annot_level;
+            if (signature.charAt(index) == ' ' && annot_level == 0) finished = true;
             index++;
           }
-          index --;
+          index--;
           break;
         case '<':
           generic_level++;
@@ -172,7 +175,7 @@ public class Helper {
     return ans;
   }
 
-  private static String removeComments(String text){
-    return text.replaceAll("(?:/\\*(?:[^*]|(?:\\*+[^*/]))*\\*+/)|(?://.*)","");
+  private static String removeComments(String text) {
+    return text.replaceAll("(?:/\\*(?:[^*]|(?:\\*+[^*/]))*\\*+/)|(?://.*)", "");
   }
 }
