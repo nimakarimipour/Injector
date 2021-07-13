@@ -55,6 +55,7 @@ public class Fix {
         this.className = className;
         this.uri = uri;
         this.inject = inject;
+        this.pkg = this.className.contains(".") ? this.className.substring(0, this.className.lastIndexOf(".")) : "";
     }
 
     public static Fix createFromJson(JSONObject fixJson) {
@@ -70,7 +71,12 @@ public class Fix {
                 clazz,
                 uri,
                 fixJson.get(KEYS.INJECT.label).toString());
-        fix.pkg = clazz.contains(".") ? clazz.substring(0, clazz.lastIndexOf(".")) : "";
+        if(fixJson.get(KEYS.INDEX.label) != null){
+            fix.index = fixJson.get(KEYS.INDEX.label).toString();
+        }
+        if(fixJson.get(KEYS.COMPULSORY.label) != null){
+            fix.compulsory = fixJson.get(KEYS.COMPULSORY.label).toString();
+        }
         return fix;
     }
 

@@ -1,1 +1,1 @@
-{"fixes":[{"annotation":"javax.annotation.Nullable","compulsory":null,"method":"","param":"f","index":null,"location":"CLASS_FIELD","class":"com.uber.Super","pkg":null,"inject":"false","uri":"/Users/nima/Developer/Injector/tests/remove_annot_field/src/Super.java"}]}
+{"fixes":[{"annotation":"javax.annotation.Nullable","compulsory":null,"method":"","param":"f","index":null,"location":"CLASS_FIELD","class":"com.uber.Super","pkg":"com.uber","inject":"false","uri":"/Users/nima/Developer/Injector/tests/remove_annot_field/src/Super.java"}]}
