@@ -51,7 +51,7 @@ public class InjectorTestHelper {
     return this;
   }
 
-  public void start() {
+  public void start(boolean log) {
     Injector injector = Injector.builder().setMode(Injector.MODE.TEST).build();
     writeFixes();
     Report report =
@@ -65,6 +65,10 @@ public class InjectorTestHelper {
       if (!trimmedSrc.equals(trimmedDest))
         fail("\nExpected:\n" + destFile + "\n\nBut found:\n" + srcFile + "\n");
     }
+  }
+
+  public void start() {
+    this.start(false);
   }
 
   private void writeFixes() {

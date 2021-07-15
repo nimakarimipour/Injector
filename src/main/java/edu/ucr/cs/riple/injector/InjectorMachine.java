@@ -175,11 +175,13 @@ public class InjectorMachine {
   }
 
   private void log(String className, boolean fail) {
-    if (fail) System.out.print("\u001B[31m");
-    else System.out.print("\u001B[32m");
-    System.out.printf("Processing %-50s", Helper.simpleName(className));
-    if (fail) System.out.println("✘ (Skipped)");
-    else System.out.println("\u2713");
-    System.out.print("\u001B[0m");
+    if (Injector.LOG) {
+      if (fail) System.out.print("\u001B[31m");
+      else System.out.print("\u001B[32m");
+      System.out.printf("Processing %-50s", Helper.simpleName(className));
+      if (fail) System.out.println("✘ (Skipped)");
+      else System.out.println("\u2713");
+      System.out.print("\u001B[0m");
+    }
   }
 }

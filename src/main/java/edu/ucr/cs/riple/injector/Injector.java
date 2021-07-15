@@ -6,6 +6,7 @@ import java.util.List;
     "UnusedVariable") // todo: Remove this later, this class is still under construction
 public class Injector {
   public final MODE mode;
+  public static boolean LOG;
 
   public enum MODE {
     BATCH,
@@ -20,11 +21,12 @@ public class Injector {
     return new InjectorBuilder();
   }
 
-  public Report start(List<WorkList> workLists) {
+  public Report start(List<WorkList> workLists, boolean log) {
+    LOG = log;
     Report report = new Report();
     for (WorkList workList : workLists)
       report.totalNumberOfDistinctFixes += workList.getFixes().size();
-    System.out.println("Received " + report.totalNumberOfDistinctFixes + " number of fixes");
+    log("Received " + report.totalNumberOfDistinctFixes + " number of fixes");
     report.processed = new InjectorMachine(workLists, mode).start();
     System.out.println(
         "Received "
@@ -34,6 +36,10 @@ public class Injector {
             + " number of fixes");
 
     return report;
+  }
+
+  public Report start(List<WorkList> workLists) {
+    return start(workLists, false);
   }
 
   public static class InjectorBuilder {
@@ -46,6 +52,12 @@ public class Injector {
 
     public Injector build() {
       return new Injector(mode);
+    }
+  }
+
+  public static void log(String content) {
+    if (LOG) {
+      System.out.println(content);
     }
   }
 }
