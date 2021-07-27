@@ -56,7 +56,7 @@ public class InjectorMachine {
           log(workList.className(), !success);
         }
         overWriteToFile(tree, workList.getUri());
-      } catch (FileNotFoundException e) {
+      } catch (Exception e) {
         e.printStackTrace();
         log(workList.className(), false);
       }

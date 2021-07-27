@@ -26,15 +26,7 @@ public class Injector {
     Report report = new Report();
     for (WorkList workList : workLists)
       report.totalNumberOfDistinctFixes += workList.getFixes().size();
-    log("Received " + report.totalNumberOfDistinctFixes + " number of fixes");
     report.processed = new InjectorMachine(workLists, mode).start();
-    System.out.println(
-        "Received "
-            + report.totalNumberOfDistinctFixes
-            + " fixes and applied "
-            + report.processed
-            + " number of fixes");
-
     return report;
   }
 
