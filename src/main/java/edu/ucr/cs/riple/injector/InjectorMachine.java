@@ -57,8 +57,7 @@ public class InjectorMachine {
         }
         overWriteToFile(tree, workList.getUri());
       } catch (Exception e) {
-        e.printStackTrace();
-        log(workList.className(), false);
+        log(workList.className(), true);
       }
     }
     return processed;
