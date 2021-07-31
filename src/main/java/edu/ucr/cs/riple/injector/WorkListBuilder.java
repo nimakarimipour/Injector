@@ -1,6 +1,7 @@
 package edu.ucr.cs.riple.injector;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -53,6 +54,9 @@ public class WorkListBuilder {
     ArrayList<String> uris = new ArrayList<>();
     ArrayList<WorkList> workLists = new ArrayList<>();
     for (Fix fix : this.fixes) {
+      if(!new File(fix.uri).exists() && fix.uri.startsWith("file:")){
+        fix.uri = fix.uri.substring("file:".length());
+      }
       if (!uris.contains(fix.uri)) {
         uris.add(fix.uri);
         WorkList workList = new WorkList(fix.uri);

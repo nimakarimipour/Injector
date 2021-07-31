@@ -3,16 +3,13 @@ package edu.ucr.cs.riple.injector;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.CallableDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-@SuppressWarnings({
-  "UnusedVariable",
-  "StringSplitter"
-}) // todo: Remove this later, this class is still under construction
 public class Helper {
 
   public static String extractMethodName(String signature) {
@@ -35,7 +32,7 @@ public class Helper {
     return ans.toString();
   }
 
-  public static boolean matchesMethodSignature(CallableDeclaration methodDecl, String signature) {
+  public static boolean matchesMethodSignature(CallableDeclaration<MethodDeclaration> methodDecl, String signature) {
     if (!methodDecl.getName().toString().equals(extractMethodName(signature))) return false;
     List<String> paramsTypesInSignature = extractParamTypesOfMethodInString(signature);
     List<String> paramTypes = extractParamTypesOfMethodInString(methodDecl);
@@ -53,11 +50,11 @@ public class Helper {
     return true;
   }
 
-  public static List<String> extractParamTypesOfMethodInString(CallableDeclaration methodDecl) {
+  public static List<String> extractParamTypesOfMethodInString(CallableDeclaration<MethodDeclaration> methodDecl) {
     ArrayList<String> paramTypes = new ArrayList<>();
-    for (Object param : methodDecl.getParameters()) {
-      if (param instanceof Parameter) {
-        paramTypes.add(((Parameter) param).getType().asString());
+    for (Parameter param : methodDecl.getParameters()) {
+      if (param != null) {
+        paramTypes.add(param.getType().asString());
       }
     }
     return paramTypes;
@@ -173,9 +170,5 @@ public class Helper {
     }
     if (signature.length() > 0 && generic_level == 0) ans.add(tmp.toString());
     return ans;
-  }
-
-  private static String removeComments(String text) {
-    return text.replaceAll("(?:/\\*(?:[^*]|(?:\\*+[^*/]))*\\*+/)|(?://.*)", "");
   }
 }

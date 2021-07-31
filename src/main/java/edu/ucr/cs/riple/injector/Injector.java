@@ -2,8 +2,6 @@ package edu.ucr.cs.riple.injector;
 
 import java.util.List;
 
-@SuppressWarnings(
-    "UnusedVariable") // todo: Remove this later, this class is still under construction
 public class Injector {
   public final MODE mode;
   public static boolean LOG;
@@ -24,8 +22,9 @@ public class Injector {
   public Report start(List<WorkList> workLists, boolean log) {
     LOG = log;
     Report report = new Report();
-    for (WorkList workList : workLists)
+    for (WorkList workList : workLists){
       report.totalNumberOfDistinctFixes += workList.getFixes().size();
+    }
     report.processed = new InjectorMachine(workLists, mode).start();
     return report;
   }
@@ -44,12 +43,6 @@ public class Injector {
 
     public Injector build() {
       return new Injector(mode);
-    }
-  }
-
-  public static void log(String content) {
-    if (LOG) {
-      System.out.println(content);
     }
   }
 }

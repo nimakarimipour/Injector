@@ -71,13 +71,13 @@ public class InjectorMachine {
     }
     switch (fix.location) {
       case "CLASS_FIELD":
-        success = applyClassField(tree, clazz, fix);
+        success = applyClassField(clazz, fix);
         break;
       case "METHOD_RETURN":
-        success = applyMethodReturn(tree, clazz, fix);
+        success = applyMethodReturn(clazz, fix);
         break;
       case "METHOD_PARAM":
-        success = applyMethodParam(tree, clazz, fix);
+        success = applyMethodParam(clazz, fix);
         break;
     }
     if (success) {
@@ -111,7 +111,7 @@ public class InjectorMachine {
   }
 
   private boolean applyMethodParam(
-      CompilationUnit tree, ClassOrInterfaceDeclaration clazz, Fix fix) {
+          ClassOrInterfaceDeclaration clazz, Fix fix) {
     final boolean[] success = {false};
     NodeList<BodyDeclaration<?>> members = clazz.getMembers();
     members.forEach(
@@ -134,7 +134,7 @@ public class InjectorMachine {
   }
 
   private boolean applyMethodReturn(
-      CompilationUnit tree, ClassOrInterfaceDeclaration clazz, Fix fix) {
+          ClassOrInterfaceDeclaration clazz, Fix fix) {
     NodeList<BodyDeclaration<?>> members = clazz.getMembers();
     final boolean[] success = {false};
     members.forEach(
@@ -151,7 +151,7 @@ public class InjectorMachine {
   }
 
   private boolean applyClassField(
-      CompilationUnit tree, ClassOrInterfaceDeclaration clazz, Fix fix) {
+          ClassOrInterfaceDeclaration clazz, Fix fix) {
     final boolean[] success = {false};
     NodeList<BodyDeclaration<?>> members = clazz.getMembers();
     members.forEach(
