@@ -56,7 +56,7 @@ public class InjectorMachine {
         }
         overWriteToFile(tree, workList.getUri());
       } catch (Exception e) {
-        log(workList.className(), true);
+        log(workList.className());
       }
     }
     return processed;
@@ -172,13 +172,11 @@ public class InjectorMachine {
     return success[0];
   }
 
-  private void log(String className, boolean fail) {
+  private void log(String className) {
     if (Injector.LOG) {
-      if (fail) System.out.print("\u001B[31m");
-      else System.out.print("\u001B[32m");
-      System.out.printf("Injecting %-50s", Helper.simpleName(className));
-      if (fail) System.out.println("✘ (Skipped)");
-      else System.out.println("\u2713");
+      System.out.print("\u001B[31m");
+      System.out.printf("Processing %-50s", Helper.simpleName(className));
+      System.out.println("✘ (Skipped)");
       System.out.print("\u001B[0m");
     }
   }
