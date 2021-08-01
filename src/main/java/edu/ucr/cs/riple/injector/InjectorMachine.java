@@ -52,7 +52,7 @@ public class InjectorMachine {
         for (Fix fix : workList.getFixes()) {
           boolean success = applyFix(tree, fix);
           if (success) processed++;
-          log(workList.className(), !success);
+          log(fix.inject, workList.className(), !success);
         }
         overWriteToFile(tree, workList.getUri());
       } catch (Exception e) {
@@ -176,7 +176,19 @@ public class InjectorMachine {
     if (Injector.LOG) {
       if (fail) System.out.print("\u001B[31m");
       else System.out.print("\u001B[32m");
-      System.out.printf("Processing %-50s", Helper.simpleName(className));
+      System.out.printf("Injecting %-50s", Helper.simpleName(className));
+      if (fail) System.out.println("✘ (Skipped)");
+      else System.out.println("\u2713");
+      System.out.print("\u001B[0m");
+    }
+  }
+
+  private void log(String inject, String className, boolean fail) {
+    inject = inject.equals("true") ? "Injecting" : "Removing";
+    if (Injector.LOG) {
+      if (fail) System.out.print("\u001B[31m");
+      else System.out.print("\u001B[32m");
+      System.out.printf(inject + " %-50s", Helper.simpleName(className));
       if (fail) System.out.println("✘ (Skipped)");
       else System.out.println("\u2713");
       System.out.print("\u001B[0m");
