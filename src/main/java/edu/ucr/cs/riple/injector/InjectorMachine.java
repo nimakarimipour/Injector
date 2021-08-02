@@ -175,14 +175,14 @@ public class InjectorMachine {
   private void log(String className) {
     if (Injector.LOG) {
       System.out.print("\u001B[31m");
-      System.out.printf("Processing %-50s", Helper.simpleName(className));
+      System.out.printf("Processing: %-50s", Helper.simpleName(className));
       System.out.println("✘ (Skipped)");
       System.out.print("\u001B[0m");
     }
   }
 
   private void log(String inject, String className, boolean fail) {
-    inject = inject.equals("true") ? "Injecting" : "Removing";
+    inject = inject.equals("true") ? "Injecting:  " : "Removing:   ";
     if (Injector.LOG) {
       if (fail) System.out.print("\u001B[31m");
       else System.out.print("\u001B[32m");
