@@ -174,7 +174,7 @@ public class InjectorMachine {
   private void failedLog(String className) {
     if (Injector.LOG) {
       System.out.print("\u001B[31m");
-      System.out.printf("Processing: %-90s", Helper.simpleName(className));
+      System.out.printf("Processing: %-91s", Helper.simpleName(className));
       System.out.println("✘ (Skipped)");
       System.out.print("\u001B[0m");
     }
