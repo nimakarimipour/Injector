@@ -174,7 +174,7 @@ public class InjectorMachine {
   private void failedLog(String className) {
     if (Injector.LOG) {
       System.out.print("\u001B[31m");
-      System.out.printf("Processing: %-50s", Helper.simpleName(className));
+      System.out.printf("Processing: %-90s", Helper.simpleName(className));
       System.out.println("✘ (Skipped)");
       System.out.print("\u001B[0m");
     }
@@ -184,15 +184,18 @@ public class InjectorMachine {
       String inject, String className, String method, String param, String location, boolean fail) {
     inject = inject.equals("true") ? "Injecting  :" : "Removing   :";
     method = method.contains("(") ? method.substring(0, method.indexOf("(")) : method;
+    className = Helper.simpleName(className);
+    className = className.length() > 30 ? className.substring(0, 26) + "..." : className;
+    method = method.length() > 25 ? method.substring(0, 21) + "..." : method;
     if (Injector.LOG) {
       if (fail) System.out.print("\u001B[31m");
       else System.out.print("\u001B[32m");
       System.out.printf(
-          inject + " %-35s  %-30s %-20s %-10s ",
-          Helper.simpleName(className),
-          method,
-          param,
-          location);
+              inject + " %-30s %-25s %-20s %-10s ",
+              className,
+              method,
+              param,
+              location);
       if (fail) System.out.println("✘ (Skipped)");
       else System.out.println("\u2713");
       System.out.print("\u001B[0m");
