@@ -51,12 +51,14 @@ public class InjectorMachine {
         tree = LexicalPreservingPrinter.setup(StaticJavaParser.parse(new File(workList.getUri())));
         for (Fix fix : workList.getFixes()) {
           boolean success = applyFix(tree, fix);
-          if (success) processed++;
-          log(fix.inject, workList.className(), !success);
+          if (success) {
+            processed++;
+          }
+          log(fix.inject, workList.className(), fix.method, fix.param, fix.location, !success);
         }
         overWriteToFile(tree, workList.getUri());
       } catch (Exception e) {
-        log(workList.className());
+        failedLog(workList.className());
       }
     }
     return processed;
@@ -110,8 +112,7 @@ public class InjectorMachine {
     }
   }
 
-  private boolean applyMethodParam(
-          ClassOrInterfaceDeclaration clazz, Fix fix) {
+  private boolean applyMethodParam(ClassOrInterfaceDeclaration clazz, Fix fix) {
     final boolean[] success = {false};
     NodeList<BodyDeclaration<?>> members = clazz.getMembers();
     members.forEach(
@@ -133,8 +134,7 @@ public class InjectorMachine {
     return success[0];
   }
 
-  private boolean applyMethodReturn(
-          ClassOrInterfaceDeclaration clazz, Fix fix) {
+  private boolean applyMethodReturn(ClassOrInterfaceDeclaration clazz, Fix fix) {
     NodeList<BodyDeclaration<?>> members = clazz.getMembers();
     final boolean[] success = {false};
     members.forEach(
@@ -150,8 +150,7 @@ public class InjectorMachine {
     return success[0];
   }
 
-  private boolean applyClassField(
-          ClassOrInterfaceDeclaration clazz, Fix fix) {
+  private boolean applyClassField(ClassOrInterfaceDeclaration clazz, Fix fix) {
     final boolean[] success = {false};
     NodeList<BodyDeclaration<?>> members = clazz.getMembers();
     members.forEach(
@@ -172,7 +171,7 @@ public class InjectorMachine {
     return success[0];
   }
 
-  private void log(String className) {
+  private void failedLog(String className) {
     if (Injector.LOG) {
       System.out.print("\u001B[31m");
       System.out.printf("Processing: %-50s", Helper.simpleName(className));
@@ -181,12 +180,19 @@ public class InjectorMachine {
     }
   }
 
-  private void log(String inject, String className, boolean fail) {
-    inject = inject.equals("true") ? "Injecting:  " : "Removing:   ";
+  private void log(
+      String inject, String className, String method, String param, String location, boolean fail) {
+    inject = inject.equals("true") ? "Injecting  :" : "Removing   :";
+    method = method.contains("(") ? method.substring(0, method.indexOf("(")) : method;
     if (Injector.LOG) {
       if (fail) System.out.print("\u001B[31m");
       else System.out.print("\u001B[32m");
-      System.out.printf(inject + " %-50s", Helper.simpleName(className));
+      System.out.printf(
+          inject + " %-30s  %-30s %-20s %-10s ",
+          Helper.simpleName(className),
+          method,
+          param,
+          location);
       if (fail) System.out.println("✘ (Skipped)");
       else System.out.println("\u2713");
       System.out.print("\u001B[0m");

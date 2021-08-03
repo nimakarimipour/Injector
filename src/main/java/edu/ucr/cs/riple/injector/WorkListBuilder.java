@@ -54,7 +54,7 @@ public class WorkListBuilder {
     ArrayList<String> uris = new ArrayList<>();
     ArrayList<WorkList> workLists = new ArrayList<>();
     for (Fix fix : this.fixes) {
-      if(!new File(fix.uri).exists() && fix.uri.startsWith("file:")){
+      if (!new File(fix.uri).exists() && fix.uri.startsWith("file:")) {
         fix.uri = fix.uri.substring("file:".length());
       }
       if (!uris.contains(fix.uri)) {

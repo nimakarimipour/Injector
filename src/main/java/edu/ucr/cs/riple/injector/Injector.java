@@ -22,7 +22,7 @@ public class Injector {
   public Report start(List<WorkList> workLists, boolean log) {
     LOG = log;
     Report report = new Report();
-    for (WorkList workList : workLists){
+    for (WorkList workList : workLists) {
       report.totalNumberOfDistinctFixes += workList.getFixes().size();
     }
     report.processed = new InjectorMachine(workLists, mode).start();

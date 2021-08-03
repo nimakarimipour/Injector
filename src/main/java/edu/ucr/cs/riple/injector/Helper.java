@@ -32,7 +32,8 @@ public class Helper {
     return ans.toString();
   }
 
-  public static boolean matchesMethodSignature(CallableDeclaration<MethodDeclaration> methodDecl, String signature) {
+  public static boolean matchesMethodSignature(
+      CallableDeclaration<MethodDeclaration> methodDecl, String signature) {
     if (!methodDecl.getName().toString().equals(extractMethodName(signature))) return false;
     List<String> paramsTypesInSignature = extractParamTypesOfMethodInString(signature);
     List<String> paramTypes = extractParamTypesOfMethodInString(methodDecl);
@@ -50,7 +51,8 @@ public class Helper {
     return true;
   }
 
-  public static List<String> extractParamTypesOfMethodInString(CallableDeclaration<MethodDeclaration> methodDecl) {
+  public static List<String> extractParamTypesOfMethodInString(
+      CallableDeclaration<MethodDeclaration> methodDecl) {
     ArrayList<String> paramTypes = new ArrayList<>();
     for (Parameter param : methodDecl.getParameters()) {
       if (param != null) {
