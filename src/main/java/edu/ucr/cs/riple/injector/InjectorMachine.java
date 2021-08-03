@@ -188,7 +188,7 @@ public class InjectorMachine {
       if (fail) System.out.print("\u001B[31m");
       else System.out.print("\u001B[32m");
       System.out.printf(
-          inject + " %-30s  %-30s %-20s %-10s ",
+          inject + " %-35s  %-30s %-20s %-10s ",
           Helper.simpleName(className),
           method,
           param,
