@@ -15,6 +15,7 @@ public class Fix {
   public String compulsory;
   public String index;
   public String pkg;
+  public int referred;
 
   public enum KEYS {
     PARAM("param"),
