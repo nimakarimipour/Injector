@@ -165,6 +165,7 @@ public class InjectorMachine {
       private Node node;
       private FieldDeclaration fieldDeclaration;
       private NodeList<Modifier> modifiers;
+      private NodeList<AnnotationExpr> annots;
     }
     final int[] index = {0};
     FieldDecl fieldDecl = new FieldDecl();
@@ -188,6 +189,7 @@ public class InjectorMachine {
                                 fieldDecl.node = v;
                                 fieldDecl.fieldDeclaration = fieldDeclaration;
                                 fieldDecl.modifiers = fieldDeclaration.getModifiers();
+                                fieldDecl.annots = fieldDeclaration.getAnnotations();
                               } else {
                                 applyAnnotation(
                                     fieldDeclaration, fix.annotation, Boolean.parseBoolean(fix.inject));
@@ -213,6 +215,7 @@ public class InjectorMachine {
                   .toArray(Modifier.Keyword[]::new)));
       clazz.getMembers().add(fieldDecl.index, fieldDeclaration);
       fieldDecl.fieldDeclaration.remove(fieldDecl.node);
+      fieldDeclaration.setAnnotations(fieldDecl.annots);
       applyAnnotation(
           fieldDeclaration.asFieldDeclaration(), fix.annotation, Boolean.parseBoolean(fix.inject));
       success[0] = true;
