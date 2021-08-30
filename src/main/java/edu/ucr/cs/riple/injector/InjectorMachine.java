@@ -158,28 +158,13 @@ public class InjectorMachine {
 
   private boolean applyClassField(ClassOrInterfaceDeclaration clazz, Fix fix) {
     class FieldDecl {
-      boolean required = false;
-      Type type;
-      String name;
-      int index;
-      Node node;
-      FieldDeclaration fieldDeclaration;
-      NodeList<Modifier> modifiers;
-
-      @Override
-      public String toString() {
-        return "FieldDecl{"
-            + "required="
-            + required
-            + ", type="
-            + type
-            + ", name='"
-            + name
-            + '\''
-            + ", index="
-            + index
-            + '}';
-      }
+      private boolean required = false;
+      private Type type;
+      private String name;
+      private int index;
+      private Node node;
+      private FieldDeclaration fieldDeclaration;
+      private NodeList<Modifier> modifiers;
     }
     final int[] index = {0};
     FieldDecl fieldDecl = new FieldDecl();
