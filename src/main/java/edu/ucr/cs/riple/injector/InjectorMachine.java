@@ -2,13 +2,17 @@ package edu.ucr.cs.riple.injector;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
+import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 import java.io.File;
 import java.io.FileWriter;
@@ -151,25 +155,69 @@ public class InjectorMachine {
   }
 
   private boolean applyClassField(ClassOrInterfaceDeclaration clazz, Fix fix) {
+    class FieldDeclInfo {
+      private boolean required = false;
+      private Type type;
+      private String name;
+      private int index;
+      private Node node;
+      private FieldDeclaration fieldDeclaration;
+      private NodeList<Modifier> modifiers;
+    }
+    final int[] index = {0};
+    FieldDeclInfo fieldDeclInfo = new FieldDeclInfo();
     final boolean[] success = {false};
     NodeList<BodyDeclaration<?>> members = clazz.getMembers();
     members.forEach(
-        bodyDeclaration ->
-            bodyDeclaration.ifFieldDeclaration(
-                fieldDeclaration -> {
-                  NodeList<VariableDeclarator> vars =
-                      fieldDeclaration.asFieldDeclaration().getVariables();
-                  for (VariableDeclarator v : vars) {
-                    if (v.getName().toString().equals(fix.param)) {
-                      applyAnnotation(
-                          fieldDeclaration, fix.annotation, Boolean.parseBoolean(fix.inject));
-                      success[0] = true;
-                      break;
-                    }
-                  }
-                }));
+            bodyDeclaration -> {
+              index[0]++;
+              if (bodyDeclaration.isFieldDeclaration()) {
+                bodyDeclaration.ifFieldDeclaration(
+                        fieldDeclaration -> {
+                          NodeList<VariableDeclarator> vars =
+                                  fieldDeclaration.asFieldDeclaration().getVariables();
+                          for (VariableDeclarator v : vars) {
+                            if (v.getName().toString().equals(fix.param)) {
+                              if (vars.size() > 1) {
+                                fieldDeclInfo.required = true;
+                                fieldDeclInfo.type = v.getType();
+                                fieldDeclInfo.name = v.getName().asString();
+                                fieldDeclInfo.index = index[0];
+                                fieldDeclInfo.node = v;
+                                fieldDeclInfo.fieldDeclaration = fieldDeclaration;
+                                fieldDeclInfo.modifiers = fieldDeclaration.getModifiers();
+                              } else {
+                                applyAnnotation(
+                                        fieldDeclaration, fix.annotation, Boolean.parseBoolean(fix.inject));
+                                success[0] = true;
+                              }
+                              break;
+                            }
+                          }
+                        });
+              }
+            });
+    if (fieldDeclInfo.required) {
+      FieldDeclaration fieldDeclaration = new FieldDeclaration();
+      VariableDeclarator variable = new VariableDeclarator(fieldDeclInfo.type, fieldDeclInfo.name);
+      fieldDeclaration.getVariables().add(variable);
+      fieldDeclaration.setModifiers(
+              Modifier.createModifierList(
+                      fieldDeclInfo
+                              .modifiers
+                              .stream()
+                              .map(Modifier::getKeyword)
+                              .distinct()
+                              .toArray(Modifier.Keyword[]::new)));
+      clazz.getMembers().add(fieldDeclInfo.index, fieldDeclaration);
+      fieldDeclInfo.fieldDeclaration.remove(fieldDeclInfo.node);
+      applyAnnotation(
+              fieldDeclaration.asFieldDeclaration(), fix.annotation, Boolean.parseBoolean(fix.inject));
+      success[0] = true;
+    }
     return success[0];
   }
+
 
   private void failedLog(String className) {
     if (Injector.LOG) {
