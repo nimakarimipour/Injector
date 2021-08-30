@@ -169,55 +169,54 @@ public class InjectorMachine {
     final boolean[] success = {false};
     NodeList<BodyDeclaration<?>> members = clazz.getMembers();
     members.forEach(
-            bodyDeclaration -> {
-              index[0]++;
-              if (bodyDeclaration.isFieldDeclaration()) {
-                bodyDeclaration.ifFieldDeclaration(
-                        fieldDeclaration -> {
-                          NodeList<VariableDeclarator> vars =
-                                  fieldDeclaration.asFieldDeclaration().getVariables();
-                          for (VariableDeclarator v : vars) {
-                            if (v.getName().toString().equals(fix.param)) {
-                              if (vars.size() > 1) {
-                                fieldDeclInfo.required = true;
-                                fieldDeclInfo.type = v.getType();
-                                fieldDeclInfo.name = v.getName().asString();
-                                fieldDeclInfo.index = index[0];
-                                fieldDeclInfo.node = v;
-                                fieldDeclInfo.fieldDeclaration = fieldDeclaration;
-                                fieldDeclInfo.modifiers = fieldDeclaration.getModifiers();
-                              } else {
-                                applyAnnotation(
-                                        fieldDeclaration, fix.annotation, Boolean.parseBoolean(fix.inject));
-                                success[0] = true;
-                              }
-                              break;
-                            }
-                          }
-                        });
-              }
-            });
+        bodyDeclaration -> {
+          index[0]++;
+          if (bodyDeclaration.isFieldDeclaration()) {
+            bodyDeclaration.ifFieldDeclaration(
+                fieldDeclaration -> {
+                  NodeList<VariableDeclarator> vars =
+                      fieldDeclaration.asFieldDeclaration().getVariables();
+                  for (VariableDeclarator v : vars) {
+                    if (v.getName().toString().equals(fix.param)) {
+                      if (vars.size() > 1) {
+                        fieldDeclInfo.required = true;
+                        fieldDeclInfo.type = v.getType();
+                        fieldDeclInfo.name = v.getName().asString();
+                        fieldDeclInfo.index = index[0];
+                        fieldDeclInfo.node = v;
+                        fieldDeclInfo.fieldDeclaration = fieldDeclaration;
+                        fieldDeclInfo.modifiers = fieldDeclaration.getModifiers();
+                      } else {
+                        applyAnnotation(
+                            fieldDeclaration, fix.annotation, Boolean.parseBoolean(fix.inject));
+                        success[0] = true;
+                      }
+                      break;
+                    }
+                  }
+                });
+          }
+        });
     if (fieldDeclInfo.required) {
       FieldDeclaration fieldDeclaration = new FieldDeclaration();
       VariableDeclarator variable = new VariableDeclarator(fieldDeclInfo.type, fieldDeclInfo.name);
       fieldDeclaration.getVariables().add(variable);
       fieldDeclaration.setModifiers(
-              Modifier.createModifierList(
-                      fieldDeclInfo
-                              .modifiers
-                              .stream()
-                              .map(Modifier::getKeyword)
-                              .distinct()
-                              .toArray(Modifier.Keyword[]::new)));
+          Modifier.createModifierList(
+              fieldDeclInfo
+                  .modifiers
+                  .stream()
+                  .map(Modifier::getKeyword)
+                  .distinct()
+                  .toArray(Modifier.Keyword[]::new)));
       clazz.getMembers().add(fieldDeclInfo.index, fieldDeclaration);
       fieldDeclInfo.fieldDeclaration.remove(fieldDeclInfo.node);
       applyAnnotation(
-              fieldDeclaration.asFieldDeclaration(), fix.annotation, Boolean.parseBoolean(fix.inject));
+          fieldDeclaration.asFieldDeclaration(), fix.annotation, Boolean.parseBoolean(fix.inject));
       success[0] = true;
     }
     return success[0];
   }
-
 
   private void failedLog(String className) {
     if (Injector.LOG) {
@@ -238,12 +237,7 @@ public class InjectorMachine {
     if (Injector.LOG) {
       if (fail) System.out.print("\u001B[31m");
       else System.out.print("\u001B[32m");
-      System.out.printf(
-              inject + " %-30s %-25s %-20s %-10s ",
-              className,
-              method,
-              param,
-              location);
+      System.out.printf(inject + " %-30s %-25s %-20s %-10s ", className, method, param, location);
       if (fail) System.out.println("✘ (Skipped)");
       else System.out.println("\u2713");
       System.out.print("\u001B[0m");
