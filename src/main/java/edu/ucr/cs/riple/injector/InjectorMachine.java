@@ -2,13 +2,17 @@ package edu.ucr.cs.riple.injector;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
+import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 import java.io.File;
 import java.io.FileWriter;
@@ -16,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class InjectorMachine {
 
@@ -58,6 +63,7 @@ public class InjectorMachine {
         }
         overWriteToFile(tree, workList.getUri());
       } catch (Exception e) {
+        System.out.println(e);
         failedLog(workList.className());
       }
     }
@@ -151,23 +157,81 @@ public class InjectorMachine {
   }
 
   private boolean applyClassField(ClassOrInterfaceDeclaration clazz, Fix fix) {
+    class FieldDecl {
+      boolean required = false;
+      Type type;
+      String name;
+      int index;
+      Node node;
+      FieldDeclaration fieldDeclaration;
+      NodeList<Modifier> modifiers;
+
+      @Override
+      public String toString() {
+        return "FieldDecl{"
+            + "required="
+            + required
+            + ", type="
+            + type
+            + ", name='"
+            + name
+            + '\''
+            + ", index="
+            + index
+            + '}';
+      }
+    }
+    final int[] index = {0};
+    FieldDecl fieldDecl = new FieldDecl();
     final boolean[] success = {false};
     NodeList<BodyDeclaration<?>> members = clazz.getMembers();
     members.forEach(
-        bodyDeclaration ->
-            bodyDeclaration.ifFieldDeclaration(
-                fieldDeclaration -> {
-                  NodeList<VariableDeclarator> vars =
-                      fieldDeclaration.asFieldDeclaration().getVariables();
-                  for (VariableDeclarator v : vars) {
-                    if (v.getName().toString().equals(fix.param)) {
-                      applyAnnotation(
-                          fieldDeclaration, fix.annotation, Boolean.parseBoolean(fix.inject));
-                      success[0] = true;
-                      break;
-                    }
-                  }
-                }));
+            bodyDeclaration -> {
+              index[0]++;
+              if (bodyDeclaration.isFieldDeclaration()) {
+                bodyDeclaration.ifFieldDeclaration(
+                        fieldDeclaration -> {
+                          NodeList<VariableDeclarator> vars =
+                              fieldDeclaration.asFieldDeclaration().getVariables();
+                          for (VariableDeclarator v : vars) {
+                            if (v.getName().toString().equals(fix.param)) {
+                              if (vars.size() > 1) {
+                                fieldDecl.required = true;
+                                fieldDecl.type = v.getType();
+                                fieldDecl.name = v.getName().asString();
+                                fieldDecl.index = index[0];
+                                fieldDecl.node = v;
+                                fieldDecl.fieldDeclaration = fieldDeclaration;
+                                fieldDecl.modifiers = fieldDeclaration.getModifiers();
+                              } else {
+                                applyAnnotation(
+                                    fieldDeclaration, fix.annotation, Boolean.parseBoolean(fix.inject));
+                                success[0] = true;
+                              }
+                              break;
+                            }
+                          }
+                        });
+              }
+            });
+    if (fieldDecl.required) {
+      FieldDeclaration fieldDeclaration = new FieldDeclaration();
+      VariableDeclarator variable = new VariableDeclarator(fieldDecl.type, fieldDecl.name);
+      fieldDeclaration.getVariables().add(variable);
+      fieldDeclaration.setModifiers(
+          Modifier.createModifierList(
+              fieldDecl
+                  .modifiers
+                  .stream()
+                  .map(Modifier::getKeyword)
+                  .distinct()
+                  .toArray(Modifier.Keyword[]::new)));
+      clazz.getMembers().add(fieldDecl.index, fieldDeclaration);
+      fieldDecl.fieldDeclaration.remove(fieldDecl.node);
+      applyAnnotation(
+          fieldDeclaration.asFieldDeclaration(), fix.annotation, Boolean.parseBoolean(fix.inject));
+      success[0] = true;
+    }
     return success[0];
   }
 
@@ -190,12 +254,7 @@ public class InjectorMachine {
     if (Injector.LOG) {
       if (fail) System.out.print("\u001B[31m");
       else System.out.print("\u001B[32m");
-      System.out.printf(
-              inject + " %-30s %-25s %-20s %-10s ",
-              className,
-              method,
-              param,
-              location);
+      System.out.printf(inject + " %-30s %-25s %-20s %-10s ", className, method, param, location);
       if (fail) System.out.println("✘ (Skipped)");
       else System.out.println("\u2713");
       System.out.print("\u001B[0m");
