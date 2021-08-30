@@ -159,10 +159,10 @@ public class InjectorMachine {
       private boolean required = false;
       private Type type;
       private String name;
-      private int index;
       private Node node;
       private FieldDeclaration fieldDeclaration;
       private NodeList<Modifier> modifiers;
+      private int index;
     }
     final int[] index = {0};
     FieldDeclInfo fieldDeclInfo = new FieldDeclInfo();
