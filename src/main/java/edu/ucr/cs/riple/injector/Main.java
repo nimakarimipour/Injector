@@ -14,11 +14,11 @@ public class Main {
         new Fix(
             "javax.annotation.Nullable",
             "null",
-            "padTop",
+            "b",
             "CLASS_FIELD",
-            "com.badlogic.gdx.scenes.scene2d.ui.Cell",
-            "//Users/nima/Developer/NullAwayFixer/Projects/libgdx/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/Cell.java",
-            "true");
+            "com.uber.Child",
+            "/Users/nima/Developer/TestNullAway/src/main/java/com/uber/Child.java",
+            "false");
     fix.index = "0";
     apply(Collections.singletonList(fix));
   }
