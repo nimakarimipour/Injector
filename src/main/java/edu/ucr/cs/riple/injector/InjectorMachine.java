@@ -11,6 +11,7 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AnnotationExpr;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public class InjectorMachine {
@@ -166,6 +168,7 @@ public class InjectorMachine {
       private FieldDeclaration fieldDeclaration;
       private NodeList<Modifier> modifiers;
       private NodeList<AnnotationExpr> annots;
+      private Optional<Expression> initializer;
     }
     final int[] index = {0};
     FieldDecl fieldDecl = new FieldDecl();
@@ -190,6 +193,7 @@ public class InjectorMachine {
                                 fieldDecl.fieldDeclaration = fieldDeclaration;
                                 fieldDecl.modifiers = fieldDeclaration.getModifiers();
                                 fieldDecl.annots = fieldDeclaration.getAnnotations();
+                                fieldDecl.initializer = v.getInitializer();
                               } else {
                                 applyAnnotation(
                                     fieldDeclaration, fix.annotation, Boolean.parseBoolean(fix.inject));
@@ -204,6 +208,7 @@ public class InjectorMachine {
     if (fieldDecl.required) {
       FieldDeclaration fieldDeclaration = new FieldDeclaration();
       VariableDeclarator variable = new VariableDeclarator(fieldDecl.type, fieldDecl.name);
+      fieldDecl.initializer.ifPresent(variable::setInitializer);
       fieldDeclaration.getVariables().add(variable);
       fieldDeclaration.setModifiers(
           Modifier.createModifierList(
