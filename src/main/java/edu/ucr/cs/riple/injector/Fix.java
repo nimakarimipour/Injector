@@ -84,8 +84,7 @@ public class Fix {
     return fix;
   }
 
-  @Override
-  public String toString() {
+  public String display() {
     return "\n  {"
         + "\n\tannotation='"
         + annotation
@@ -118,6 +117,11 @@ public class Fix {
         + compulsory
         + '\''
         + "\n  }\n";
+  }
+
+  @Override
+  public String toString() {
+    return location + " " + className + " " + method + " " + param;
   }
 
   @Override
@@ -167,7 +171,10 @@ public class Fix {
   }
 
   public static Fix fromCSVLine(String line, String delimiter) {
-    String[] infos = line.split(delimiter);
+    return fromArrayInfo(line.split(delimiter));
+  }
+
+  public static Fix fromArrayInfo(String[] infos) {
     Fix fix = new Fix(infos[8], infos[3], infos[4], infos[0], infos[2], infos[6], infos[10]);
     fix.pkg = infos[1];
     fix.compulsory = infos[9];
