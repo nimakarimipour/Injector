@@ -68,14 +68,14 @@ public class Fix {
     List<Fix> ans = new ArrayList<>();
     Fix fix = createFromJson(fixJson);
     ans.add(fix);
-    if (deep) {
+    if (deep && fixJson.containsKey("followups")) {
       JSONArray followups = (JSONArray) fixJson.get("followups");
       followups.forEach(o -> ans.add(createFromJson((JSONObject) o)));
     }
     return ans;
   }
 
-  private static Fix createFromJson(JSONObject fixJson) {
+  public static Fix createFromJson(JSONObject fixJson) {
     String uri = fixJson.get(KEYS.URI.label).toString();
     String file = "file:/";
     if (uri.contains(file)) uri = uri.substring(uri.indexOf(file) + file.length());
