@@ -1,6 +1,9 @@
 package edu.ucr.cs.riple.injector;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 @SuppressWarnings("unchecked")
@@ -61,7 +64,18 @@ public class Fix {
             : "";
   }
 
-  public static Fix createFromJson(JSONObject fixJson) {
+  public static List<Fix> createFromJson(JSONObject fixJson, boolean deep) {
+    List<Fix> ans = new ArrayList<>();
+    Fix fix = createFromJson(fixJson);
+    ans.add(fix);
+    if (deep) {
+      JSONArray followups = (JSONArray) fixJson.get("followups");
+      followups.forEach(o -> ans.add(createFromJson((JSONObject) o)));
+    }
+    return ans;
+  }
+
+  private static Fix createFromJson(JSONObject fixJson) {
     String uri = fixJson.get(KEYS.URI.label).toString();
     String file = "file:/";
     if (uri.contains(file)) uri = uri.substring(uri.indexOf(file) + file.length());
