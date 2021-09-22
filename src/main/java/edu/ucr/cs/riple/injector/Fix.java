@@ -138,8 +138,8 @@ public class Fix {
     return location + " " + className + " " + method + " " + param;
   }
 
-  @Override
-  public boolean equals(Object o) {
+
+  public boolean deepEquals(Object o) {
     if (this == o) return true;
     if (!(o instanceof Fix)) return false;
     Fix fix = (Fix) o;
@@ -154,6 +154,19 @@ public class Fix {
         && Objects.equals(index, fix.index)
         && Objects.equals(compulsory, fix.compulsory);
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Fix)) return false;
+    Fix fix = (Fix) o;
+    return Objects.equals(annotation, fix.annotation)
+            && Objects.equals(method, fix.method)
+            && Objects.equals(param, fix.param)
+            && Objects.equals(location, fix.location)
+            && Objects.equals(className, fix.className);
+  }
+
 
   @Override
   public int hashCode() {
