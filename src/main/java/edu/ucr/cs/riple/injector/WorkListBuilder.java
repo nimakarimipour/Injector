@@ -20,15 +20,10 @@ public class WorkListBuilder {
 
   public WorkListBuilder(String filePath) {
     this.filePath = filePath;
-    readFixes(false);
+    readFixes();
   }
 
-  public WorkListBuilder(String filePath, boolean deep) {
-    this.filePath = filePath;
-    readFixes(deep);
-  }
-
-  private void readFixes(boolean deep) {
+  private void readFixes() {
     try {
       BufferedReader bufferedReader =
           Files.newBufferedReader(Paths.get(filePath), Charset.defaultCharset());
@@ -37,7 +32,7 @@ public class WorkListBuilder {
       bufferedReader.close();
       fixes = new ArrayList<>();
       for (Object o : fixesJson) {
-        fixes.addAll(Fix.createFromJson((JSONObject) o, deep));
+        fixes.add(Fix.createFromJson((JSONObject) o));
       }
     } catch (FileNotFoundException ex) {
       throw new RuntimeException("Unable to open file: " + this.filePath);
