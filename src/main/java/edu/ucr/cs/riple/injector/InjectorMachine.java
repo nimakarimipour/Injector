@@ -15,17 +15,23 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import me.tongfei.progressbar.ProgressBar;
+import me.tongfei.progressbar.ProgressBarStyle;
 
 public class InjectorMachine {
 
   List<WorkList> workLists;
   Injector.MODE mode;
   int processed = 0;
+  int total = 0;
 
   public InjectorMachine(List<WorkList> workLists, Injector.MODE mode) {
     this.workLists = workLists;
     this.mode = mode;
+    workLists.forEach(workList -> total += workList.getFixes().size());
   }
 
   private void overWriteToFile(CompilationUnit changed, String uri) {
@@ -46,21 +52,29 @@ public class InjectorMachine {
 
   public Integer start() {
     CompilationUnit tree;
+    ProgressBar pb = createProgressBar("Injector", total);
     for (WorkList workList : workLists) {
       try {
         tree = LexicalPreservingPrinter.setup(StaticJavaParser.parse(new File(workList.getUri())));
         for (Fix fix : workList.getFixes()) {
+          if(Injector.LOG){
+            pb.step();
+          }
           boolean success = applyFix(tree, fix);
           if (success) {
             processed++;
           }
-          log(fix.inject, workList.className(), fix.method, fix.param, fix.location, !success);
+          log(pb, fix.inject, workList.className(), fix.method, fix.param, fix.location, !success);
         }
         overWriteToFile(tree, workList.getUri());
       } catch (Exception e) {
         failedLog(workList.className());
       }
     }
+    if(Injector.LOG){
+      pb.stepTo(total);
+    }
+    pb.close();
     return processed;
   }
 
@@ -182,19 +196,42 @@ public class InjectorMachine {
   }
 
   private void log(
-      String inject, String className, String method, String param, String location, boolean fail) {
+      ProgressBar pb,
+      String inject,
+      String className,
+      String method,
+      String param,
+      String location,
+      boolean fail) {
     inject = inject.equals("true") ? "Injecting :" : "Removing  :";
     method = method.contains("(") ? method.substring(0, method.indexOf("(")) : method;
     className = Helper.simpleName(className);
     className = className.length() > 30 ? className.substring(0, 26) + "..." : className;
     method = method.length() > 25 ? method.substring(0, 21) + "..." : method;
     if (Injector.LOG) {
-      if (fail) System.out.print("\u001B[31m");
-      else System.out.print("\u001B[32m");
-      System.out.printf(inject + " %-30s %-25s %-20s %-10s ", className, method, param, location);
-      if (fail) System.out.println("✘ (Skipped)");
-      else System.out.println("\u2713");
-      System.out.print("\u001B[0m");
+      if (fail) pb.setExtraMessage("\u001B[31m");
+      else pb.setExtraMessage("\u001B[32m");
+      pb.setExtraMessage(
+          String.format(inject + " %-30s %-25s %-20s %-10s ", className, method, param, location));
+      if (fail) pb.setExtraMessage("✘ (Skipped)");
+      else pb.setExtraMessage("\u2713");
+      pb.setExtraMessage("\u001B[0m");
     }
+  }
+
+  public ProgressBar createProgressBar(String task, int steps) {
+    return new ProgressBar(
+        task,
+        steps,
+        1000,
+        System.out,
+        ProgressBarStyle.ASCII,
+        "",
+        1,
+        false,
+        null,
+        ChronoUnit.SECONDS,
+        0L,
+        Duration.ZERO);
   }
 }
