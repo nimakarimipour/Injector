@@ -57,21 +57,20 @@ public class InjectorMachine {
       try {
         tree = LexicalPreservingPrinter.setup(StaticJavaParser.parse(new File(workList.getUri())));
         for (Fix fix : workList.getFixes()) {
-          if(Injector.LOG){
+          if (Injector.LOG) {
             pb.step();
           }
           boolean success = applyFix(tree, fix);
           if (success) {
             processed++;
           }
-          log(pb, fix.inject, workList.className(), fix.method, fix.param, fix.location, !success);
         }
         overWriteToFile(tree, workList.getUri());
       } catch (Exception e) {
         failedLog(workList.className());
       }
     }
-    if(Injector.LOG){
+    if (Injector.LOG) {
       pb.stepTo(total);
     }
     pb.close();
@@ -192,30 +191,6 @@ public class InjectorMachine {
       System.out.printf("Processing: %-90s", Helper.simpleName(className));
       System.out.println("✘ (Skipped)");
       System.out.print("\u001B[0m");
-    }
-  }
-
-  private void log(
-      ProgressBar pb,
-      String inject,
-      String className,
-      String method,
-      String param,
-      String location,
-      boolean fail) {
-    inject = inject.equals("true") ? "Injecting :" : "Removing  :";
-    method = method.contains("(") ? method.substring(0, method.indexOf("(")) : method;
-    className = Helper.simpleName(className);
-    className = className.length() > 30 ? className.substring(0, 26) + "..." : className;
-    method = method.length() > 25 ? method.substring(0, 21) + "..." : method;
-    if (Injector.LOG) {
-      if (fail) pb.setExtraMessage("\u001B[31m");
-      else pb.setExtraMessage("\u001B[32m");
-      pb.setExtraMessage(
-          String.format(inject + " %-30s %-25s %-20s %-10s ", className, method, param, location));
-      if (fail) pb.setExtraMessage("✘ (Skipped)");
-      else pb.setExtraMessage("\u2713");
-      pb.setExtraMessage("\u001B[0m");
     }
   }
 
