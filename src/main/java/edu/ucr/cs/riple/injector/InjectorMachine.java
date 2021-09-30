@@ -2,36 +2,36 @@ package edu.ucr.cs.riple.injector;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.Modifier;
-import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AnnotationExpr;
-import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
-import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
+import me.tongfei.progressbar.ProgressBar;
+import me.tongfei.progressbar.ProgressBarStyle;
 
 public class InjectorMachine {
 
   List<WorkList> workLists;
   Injector.MODE mode;
   int processed = 0;
+  int total = 0;
 
   public InjectorMachine(List<WorkList> workLists, Injector.MODE mode) {
     this.workLists = workLists;
     this.mode = mode;
+    workLists.forEach(workList -> total += workList.getFixes().size());
   }
 
   private void overWriteToFile(CompilationUnit changed, String uri) {
@@ -52,22 +52,28 @@ public class InjectorMachine {
 
   public Integer start() {
     CompilationUnit tree;
+    ProgressBar pb = createProgressBar("Injector", total);
     for (WorkList workList : workLists) {
       try {
         tree = LexicalPreservingPrinter.setup(StaticJavaParser.parse(new File(workList.getUri())));
         for (Fix fix : workList.getFixes()) {
+          if (Injector.LOG) {
+            pb.step();
+          }
           boolean success = applyFix(tree, fix);
           if (success) {
             processed++;
           }
-          log(fix.inject, workList.className(), fix.method, fix.param, fix.location, !success);
         }
         overWriteToFile(tree, workList.getUri());
       } catch (Exception e) {
-        System.out.println(e);
         failedLog(workList.className());
       }
     }
+    if (Injector.LOG) {
+      pb.stepTo(total);
+    }
+    pb.close();
     return processed;
   }
 
@@ -158,72 +164,24 @@ public class InjectorMachine {
   }
 
   private boolean applyClassField(ClassOrInterfaceDeclaration clazz, Fix fix) {
-    class FieldDecl {
-      private boolean required = false;
-      private Type type;
-      private String name;
-      private int index;
-      private Node node;
-      private FieldDeclaration fieldDeclaration;
-      private NodeList<Modifier> modifiers;
-      private NodeList<AnnotationExpr> annots;
-      private Optional<Expression> initializer;
-    }
-    final int[] index = {0};
-    FieldDecl fieldDecl = new FieldDecl();
     final boolean[] success = {false};
     NodeList<BodyDeclaration<?>> members = clazz.getMembers();
     members.forEach(
-        bodyDeclaration -> {
-          index[0]++;
-          if (bodyDeclaration.isFieldDeclaration()) {
+        bodyDeclaration ->
             bodyDeclaration.ifFieldDeclaration(
                 fieldDeclaration -> {
                   NodeList<VariableDeclarator> vars =
                       fieldDeclaration.asFieldDeclaration().getVariables();
                   for (VariableDeclarator v : vars) {
                     if (v.getName().toString().equals(fix.param)) {
-                      if (vars.size() > 1) {
-                        fieldDecl.required = true;
-                        fieldDecl.type = v.getType();
-                        fieldDecl.name = v.getName().asString();
-                        fieldDecl.index = index[0];
-                        fieldDecl.node = v;
-                        fieldDecl.fieldDeclaration = fieldDeclaration;
-                        fieldDecl.modifiers = fieldDeclaration.getModifiers();
-                        fieldDecl.annots = fieldDeclaration.getAnnotations();
-                        fieldDecl.initializer = v.getInitializer();
-                      } else {
-                        applyAnnotation(
-                            fieldDeclaration, fix.annotation, Boolean.parseBoolean(fix.inject));
-                        success[0] = true;
-                      }
+                      applyAnnotation(
+                          fieldDeclaration, fix.annotation, Boolean.parseBoolean(fix.inject));
+                      success[0] = true;
                       break;
                     }
                   }
-                });
-          }
-        });
-    if (fieldDecl.required) {
-      FieldDeclaration fieldDeclaration = new FieldDeclaration();
-      VariableDeclarator variable = new VariableDeclarator(fieldDecl.type, fieldDecl.name);
-      fieldDecl.initializer.ifPresent(variable::setInitializer);
-      fieldDeclaration.getVariables().add(variable);
-      fieldDeclaration.setModifiers(
-          Modifier.createModifierList(
-              fieldDecl
-                  .modifiers
-                  .stream()
-                  .map(Modifier::getKeyword)
-                  .distinct()
-                  .toArray(Modifier.Keyword[]::new)));
-      clazz.getMembers().add(fieldDecl.index, fieldDeclaration);
-      fieldDecl.fieldDeclaration.remove(fieldDecl.node);
-      fieldDeclaration.setAnnotations(fieldDecl.annots);
-      applyAnnotation(
-          fieldDeclaration.asFieldDeclaration(), fix.annotation, Boolean.parseBoolean(fix.inject));
-      success[0] = true;
-    }
+                }));
+
     return success[0];
   }
 
@@ -236,20 +194,19 @@ public class InjectorMachine {
     }
   }
 
-  private void log(
-      String inject, String className, String method, String param, String location, boolean fail) {
-    inject = inject.equals("true") ? "Injecting :" : "Removing  :";
-    method = method.contains("(") ? method.substring(0, method.indexOf("(")) : method;
-    className = Helper.simpleName(className);
-    className = className.length() > 30 ? className.substring(0, 26) + "..." : className;
-    method = method.length() > 25 ? method.substring(0, 21) + "..." : method;
-    if (Injector.LOG) {
-      if (fail) System.out.print("\u001B[31m");
-      else System.out.print("\u001B[32m");
-      System.out.printf(inject + " %-30s %-25s %-20s %-10s ", className, method, param, location);
-      if (fail) System.out.println("✘ (Skipped)");
-      else System.out.println("\u2713");
-      System.out.print("\u001B[0m");
-    }
+  public ProgressBar createProgressBar(String task, int steps) {
+    return new ProgressBar(
+        task,
+        steps,
+        1000,
+        System.out,
+        ProgressBarStyle.ASCII,
+        "",
+        1,
+        false,
+        null,
+        ChronoUnit.SECONDS,
+        0L,
+        Duration.ZERO);
   }
 }
