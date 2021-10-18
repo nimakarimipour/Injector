@@ -64,10 +64,10 @@ public class Helper {
 
   public static ClassOrInterfaceDeclaration getClassOrInterfaceDeclaration(
       CompilationUnit cu, String pkg, String name) {
-    String classSimpleName = Helper.simpleName(name);
-    if (pkg.equals(Helper.getPackageName(name))) {
+    String classSimpleName = simpleName(name);
+    if (pkg.equals(getPackageName(name))) {
       Optional<ClassOrInterfaceDeclaration> optional = cu.getClassByName(classSimpleName);
-      if (!optional.isPresent()) {
+      if (optional.isEmpty()) {
         optional = cu.getInterfaceByName(classSimpleName);
         if (optional.isPresent()) {
           return optional.get();
