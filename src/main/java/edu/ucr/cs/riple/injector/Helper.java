@@ -67,7 +67,7 @@ public class Helper {
     String classSimpleName = simpleName(name);
     if (pkg.equals(getPackageName(name))) {
       Optional<ClassOrInterfaceDeclaration> optional = cu.getClassByName(classSimpleName);
-      if (optional.isEmpty()) {
+      if (!optional.isPresent()) {
         optional = cu.getInterfaceByName(classSimpleName);
         if (optional.isPresent()) {
           return optional.get();
