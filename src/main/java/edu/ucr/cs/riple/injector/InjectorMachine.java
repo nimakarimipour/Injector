@@ -4,8 +4,8 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
@@ -79,8 +79,8 @@ public class InjectorMachine {
 
   private boolean applyFix(CompilationUnit tree, Fix fix) {
     boolean success = false;
-    ClassOrInterfaceDeclaration clazz =
-        Helper.getClassOrInterfaceDeclaration(tree, fix.pkg, fix.className);
+    TypeDeclaration<?> clazz =
+        Helper.getClassOrInterfaceOrEnumDeclaration(tree, fix.pkg, fix.className);
     if (clazz == null) {
       return false;
     }
@@ -125,7 +125,7 @@ public class InjectorMachine {
     }
   }
 
-  private boolean applyMethodParam(ClassOrInterfaceDeclaration clazz, Fix fix) {
+  private boolean applyMethodParam(TypeDeclaration<?> clazz, Fix fix) {
     final boolean[] success = {false};
     NodeList<BodyDeclaration<?>> members = clazz.getMembers();
     members.forEach(
@@ -147,7 +147,7 @@ public class InjectorMachine {
     return success[0];
   }
 
-  private boolean applyMethodReturn(ClassOrInterfaceDeclaration clazz, Fix fix) {
+  private boolean applyMethodReturn(TypeDeclaration<?> clazz, Fix fix) {
     NodeList<BodyDeclaration<?>> members = clazz.getMembers();
     final boolean[] success = {false};
     members.forEach(
@@ -163,7 +163,7 @@ public class InjectorMachine {
     return success[0];
   }
 
-  private boolean applyClassField(ClassOrInterfaceDeclaration clazz, Fix fix) {
+  private boolean applyClassField(TypeDeclaration<?> clazz, Fix fix) {
     final boolean[] success = {false};
     NodeList<BodyDeclaration<?>> members = clazz.getMembers();
     members.forEach(

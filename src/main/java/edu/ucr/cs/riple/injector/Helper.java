@@ -3,8 +3,10 @@ package edu.ucr.cs.riple.injector;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.CallableDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.body.TypeDeclaration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -62,7 +64,7 @@ public class Helper {
     return paramTypes;
   }
 
-  public static ClassOrInterfaceDeclaration getClassOrInterfaceDeclaration(
+  public static TypeDeclaration<?> getClassOrInterfaceOrEnumDeclaration(
       CompilationUnit cu, String pkg, String name) {
     String classSimpleName = simpleName(name);
     if (pkg.equals(getPackageName(name))) {
@@ -71,6 +73,10 @@ public class Helper {
         optional = cu.getInterfaceByName(classSimpleName);
         if (optional.isPresent()) {
           return optional.get();
+        }
+        Optional<EnumDeclaration> optionalEnumDeclaration = cu.getEnumByName(classSimpleName);
+        if (optionalEnumDeclaration.isPresent()) {
+          return optionalEnumDeclaration.get();
         }
       }
     }
@@ -91,6 +97,14 @@ public class Helper {
                 classOrInterfaceDeclaration.getName().toString().equals(classSimpleName));
     if (candidates.size() > 0) {
       return candidates.get(0);
+    }
+    List<EnumDeclaration> enumCandidates =
+        cu.findAll(
+            EnumDeclaration.class,
+            classOrInterfaceDeclaration ->
+                classOrInterfaceDeclaration.getName().toString().equals(classSimpleName));
+    if (enumCandidates.size() > 0) {
+      return enumCandidates.get(0);
     }
     return null;
   }
