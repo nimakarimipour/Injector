@@ -78,6 +78,50 @@ public class BasicTest {
   }
 
   @Test
+  public void return_nullable_enum_simple() {
+    String rootName = "return_nullable_enum_simple";
+
+    injectorTestHelper =
+        new InjectorTestHelper()
+            .setRootPath(System.getProperty("user.dir") + "/tests/" + rootName)
+            .addInput(
+                "Main.java",
+                "package com.uber;",
+                "public class Main {",
+                "   public enum Test{",
+                "     CLASSIC;",
+                "     public Object run(){",
+                "       return null;",
+                "     }",
+                "   }",
+                "}")
+            .expectOutput(
+                "Main.java",
+                "package com.uber;",
+                "import javax.annotation.Nullable;",
+                "public class Main {",
+                "   public enum Test{",
+                "     CLASSIC;",
+                "     @Nullable",
+                "     public Object run(){",
+                "       return null;",
+                "     }",
+                "   }",
+                "}")
+            .addFixes(
+                new Fix(
+                    "javax.annotation.Nullable",
+                    "run()",
+                    "",
+                    "METHOD_RETURN",
+                    "com.uber.Main.Test",
+                    "Main.java",
+                    "true"));
+    injectorTestHelper.start();
+    injectorTestHelper = null;
+  }
+
+  @Test
   public void return_nullable_inner_class() {
     String rootName = "return_nullable_inner_class";
 
