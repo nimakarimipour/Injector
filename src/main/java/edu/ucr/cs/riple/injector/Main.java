@@ -12,13 +12,13 @@ public class Main {
     injector = Injector.builder().setMode(Injector.MODE.BATCH).build();
     Fix fix =
         new Fix(
-            "javax.annotation.Nullable",
+            "com.badlogic.gdx.Initializer",
+            "HttpRequest(java.lang.String)",
             "null",
-            "b",
-            "CLASS_FIELD",
-            "com.uber.Child",
-            "/Users/nima/Developer/TestNullAway/src/main/java/com/uber/Child.java",
-            "false");
+            "METHOD_RETURN",
+            "com.badlogic.gdx.Net.HttpRequest",
+            "/home/nima/Developer/AutoFixer/Evaluation/Projects/libgdx/gdx/src/com/badlogic/gdx/Net.java",
+            "true");
     fix.index = "0";
     apply(Collections.singletonList(fix));
   }

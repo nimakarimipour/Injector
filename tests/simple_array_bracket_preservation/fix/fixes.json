@@ -1,0 +1,1 @@
+{"fixes":[{"annotation":"javax.annotation.Nullable","compulsory":null,"method":"","param":"allTest","index":null,"location":"CLASS_FIELD","class":"com.uber.B","pkg":"com.uber","inject":"true","uri":"/home/nima/Developer/Injector/tests/simple_array_bracket_preservation/src/B.java"}]}

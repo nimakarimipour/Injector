@@ -4,7 +4,6 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.CallableDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import java.util.ArrayList;
@@ -35,10 +34,10 @@ public class Helper {
   }
 
   public static boolean matchesMethodSignature(
-      CallableDeclaration<MethodDeclaration> methodDecl, String signature) {
-    if (!methodDecl.getName().toString().equals(extractMethodName(signature))) return false;
+      CallableDeclaration<?> callableDec, String signature) {
+    if (!callableDec.getName().toString().equals(extractMethodName(signature))) return false;
     List<String> paramsTypesInSignature = extractParamTypesOfMethodInString(signature);
-    List<String> paramTypes = extractParamTypesOfMethodInString(methodDecl);
+    List<String> paramTypes = extractParamTypesOfMethodInString(callableDec);
     if (paramTypes.size() != paramsTypesInSignature.size()) return false;
     for (String i : paramsTypesInSignature) {
       String found = null;
@@ -53,10 +52,9 @@ public class Helper {
     return true;
   }
 
-  public static List<String> extractParamTypesOfMethodInString(
-      CallableDeclaration<MethodDeclaration> methodDecl) {
+  public static List<String> extractParamTypesOfMethodInString(CallableDeclaration<?> callableDec) {
     ArrayList<String> paramTypes = new ArrayList<>();
-    for (Parameter param : methodDecl.getParameters()) {
+    for (Parameter param : callableDec.getParameters()) {
       if (param != null) {
         paramTypes.add(param.getType().asString());
       }

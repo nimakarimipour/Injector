@@ -11,6 +11,7 @@ import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,6 +21,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import me.tongfei.progressbar.ProgressBar;
 import me.tongfei.progressbar.ProgressBarStyle;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 public class InjectorMachine {
 
@@ -52,22 +56,27 @@ public class InjectorMachine {
 
   public Integer start() {
     CompilationUnit tree;
-    ProgressBar pb = createProgressBar("Injector", total);
+    ProgressBar pb = createProgressBar(total);
+    Fix theFix = null;
     for (WorkList workList : workLists) {
       try {
         tree = LexicalPreservingPrinter.setup(StaticJavaParser.parse(new File(workList.getUri())));
         for (Fix fix : workList.getFixes()) {
+          theFix = fix;
           if (Injector.LOG) {
             pb.step();
           }
           boolean success = applyFix(tree, fix);
           if (success) {
             processed++;
+          } else {
+            logFailed(fix);
           }
         }
         overWriteToFile(tree, workList.getUri());
       } catch (Exception e) {
         failedLog(workList.className());
+        logFailed(theFix);
       }
     }
     if (Injector.LOG) {
@@ -152,11 +161,11 @@ public class InjectorMachine {
     final boolean[] success = {false};
     members.forEach(
         bodyDeclaration ->
-            bodyDeclaration.ifMethodDeclaration(
-                methodDeclaration -> {
-                  if (Helper.matchesMethodSignature(methodDeclaration, fix.method)) {
+            bodyDeclaration.ifCallableDeclaration(
+                callableDeclaration -> {
+                  if (Helper.matchesMethodSignature(callableDeclaration, fix.method)) {
                     applyAnnotation(
-                        methodDeclaration, fix.annotation, Boolean.parseBoolean(fix.inject));
+                        callableDeclaration, fix.annotation, Boolean.parseBoolean(fix.inject));
                     success[0] = true;
                   }
                 }));
@@ -194,9 +203,9 @@ public class InjectorMachine {
     }
   }
 
-  public ProgressBar createProgressBar(String task, int steps) {
+  private ProgressBar createProgressBar(int steps) {
     return new ProgressBar(
-        task,
+        "Injector",
         steps,
         1000,
         System.out,
@@ -208,5 +217,26 @@ public class InjectorMachine {
         ChronoUnit.SECONDS,
         0L,
         Duration.ZERO);
+  }
+
+  @SuppressWarnings("ALL")
+  private void logFailed(Fix fix) {
+    final String path = "/tmp/NullAwayFix/failed.json";
+    JSONObject json = null;
+    try {
+      json = (JSONObject) new JSONParser().parse(new FileReader(path));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    assert json != null;
+    JSONArray all = (JSONArray) json.get("fixes");
+    all.add(fix.getJson());
+    JSONObject toWrite = new JSONObject();
+    toWrite.put("fixes", all);
+    try {
+      Files.write(Paths.get(path), toWrite.toJSONString().getBytes());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 }
