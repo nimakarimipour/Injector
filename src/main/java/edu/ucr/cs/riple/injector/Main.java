@@ -13,11 +13,11 @@ public class Main {
     Fix fix =
         new Fix(
             "com.badlogic.gdx.Initializer",
-            "HttpRequest(java.lang.String)",
+            "format(java.lang.String,java.lang.Object...)",
             "null",
             "METHOD_RETURN",
-            "com.badlogic.gdx.Net.HttpRequest",
-            "/home/nima/Developer/AutoFixer/Evaluation/Projects/libgdx/gdx/src/com/badlogic/gdx/Net.java",
+            "com.badlogic.gdx.utils.TextFormatter",
+            "/home/nima/Developer/AutoFixer/Evaluation/Projects/libgdx/gdx/src/com/badlogic/gdx/utils/TextFormatter.java",
             "true");
     fix.index = "0";
     apply(Collections.singletonList(fix));
