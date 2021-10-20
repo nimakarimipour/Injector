@@ -4,7 +4,6 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.CallableDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ import java.util.Optional;
 
 public class Helper {
 
-  public static String extractMethodName(String signature) {
+  public static String extractCallableName(String signature) {
     StringBuilder ans = new StringBuilder();
     int level = 0;
     for (int i = 0; i < signature.length(); i++) {
@@ -34,11 +33,11 @@ public class Helper {
     return ans.toString();
   }
 
-  public static boolean matchesMethodSignature(
-      CallableDeclaration<MethodDeclaration> methodDecl, String signature) {
-    if (!methodDecl.getName().toString().equals(extractMethodName(signature))) return false;
-    List<String> paramsTypesInSignature = extractParamTypesOfMethodInString(signature);
-    List<String> paramTypes = extractParamTypesOfMethodInString(methodDecl);
+  public static boolean matchesCallableSignature(
+      CallableDeclaration<?> callableDec, String signature) {
+    if (!callableDec.getName().toString().equals(extractCallableName(signature))) return false;
+    List<String> paramsTypesInSignature = extractParamTypesOfCallableInString(signature);
+    List<String> paramTypes = extractParamTypesOfCallableInString(callableDec);
     if (paramTypes.size() != paramsTypesInSignature.size()) return false;
     for (String i : paramsTypesInSignature) {
       String found = null;
@@ -53,12 +52,16 @@ public class Helper {
     return true;
   }
 
-  public static List<String> extractParamTypesOfMethodInString(
-      CallableDeclaration<MethodDeclaration> methodDecl) {
+  public static List<String> extractParamTypesOfCallableInString(
+      CallableDeclaration<?> callableDec) {
     ArrayList<String> paramTypes = new ArrayList<>();
-    for (Parameter param : methodDecl.getParameters()) {
+    for (Parameter param : callableDec.getParameters()) {
       if (param != null) {
-        paramTypes.add(param.getType().asString());
+        String typeInString = param.getType().asString();
+        if (param.isVarArgs()) {
+          typeInString += "...";
+        }
+        paramTypes.add(typeInString);
       }
     }
     return paramTypes;
@@ -144,7 +147,7 @@ public class Helper {
     return name.substring(0, index);
   }
 
-  public static List<String> extractParamTypesOfMethodInString(String signature) {
+  public static List<String> extractParamTypesOfCallableInString(String signature) {
     signature = signature.substring(signature.indexOf("(")).replace("(", "").replace(")", "");
     int index = 0;
     int generic_level = 0;

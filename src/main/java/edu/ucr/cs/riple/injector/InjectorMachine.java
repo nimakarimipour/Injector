@@ -132,7 +132,7 @@ public class InjectorMachine {
         bodyDeclaration ->
             bodyDeclaration.ifCallableDeclaration(
                 callableDeclaration -> {
-                  if (Helper.matchesMethodSignature(callableDeclaration, fix.method)) {
+                  if (Helper.matchesCallableSignature(callableDeclaration, fix.method)) {
                     for (Object p : callableDeclaration.getParameters()) {
                       if (p instanceof Parameter) {
                         Parameter param = (Parameter) p;
@@ -152,11 +152,11 @@ public class InjectorMachine {
     final boolean[] success = {false};
     members.forEach(
         bodyDeclaration ->
-            bodyDeclaration.ifMethodDeclaration(
-                methodDeclaration -> {
-                  if (Helper.matchesMethodSignature(methodDeclaration, fix.method)) {
+            bodyDeclaration.ifCallableDeclaration(
+                callableDeclaration -> {
+                  if (Helper.matchesCallableSignature(callableDeclaration, fix.method)) {
                     applyAnnotation(
-                        methodDeclaration, fix.annotation, Boolean.parseBoolean(fix.inject));
+                        callableDeclaration, fix.annotation, Boolean.parseBoolean(fix.inject));
                     success[0] = true;
                   }
                 }));

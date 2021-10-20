@@ -419,6 +419,74 @@ public class BasicTest {
   }
 
   @Test
+  public void return_nullable_dot_array() {
+    String rootName = "return_nullable_dot_array";
+
+    new InjectorTestHelper()
+        .setRootPath(System.getProperty("user.dir") + "/tests/" + rootName)
+        .addInput(
+            "Main.java",
+            "package com.uber;",
+            "public class Main {",
+            "   public void format(String type,Object... objs) {",
+            "   }",
+            "}")
+        .expectOutput(
+            "Main.java",
+            "package com.uber;",
+            "import javax.annotation.Initializer;",
+            "public class Main {",
+            "   @Initializer",
+            "   public void format(String type,Object... objs) {",
+            "   }",
+            "}")
+        .addFixes(
+            new Fix(
+                "javax.annotation.Initializer",
+                "format(java.lang.String,java.lang.Object...)",
+                "",
+                "METHOD_RETURN",
+                "com.uber.Main",
+                "Main.java",
+                "true"))
+        .start();
+  }
+
+  @Test
+  public void initializer_constructor() {
+    String rootName = "initializer_constructor";
+
+    new InjectorTestHelper()
+        .setRootPath(System.getProperty("user.dir") + "/tests/" + rootName)
+        .addInput(
+            "Main.java",
+            "package com.uber;",
+            "public class Main {",
+            "   public Main(String type,Object... objs) {",
+            "   }",
+            "}")
+        .expectOutput(
+            "Main.java",
+            "package com.uber;",
+            "import javax.annotation.Initializer;",
+            "public class Main {",
+            "   @Initializer",
+            "   public Main(String type, Object... objs) {",
+            "   }",
+            "}")
+        .addFixes(
+            new Fix(
+                "javax.annotation.Initializer",
+                "Main(java.lang.String,java.lang.Object...)",
+                "",
+                "METHOD_RETURN",
+                "com.uber.Main",
+                "Main.java",
+                "true"))
+        .start();
+  }
+
+  @Test
   public void param_nullable_simple() {
     String rootName = "param_nullable_simple";
 
