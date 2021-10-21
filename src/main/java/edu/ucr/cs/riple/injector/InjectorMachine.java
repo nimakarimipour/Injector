@@ -11,6 +11,8 @@ import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,6 +22,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import me.tongfei.progressbar.ProgressBar;
 import me.tongfei.progressbar.ProgressBarStyle;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 public class InjectorMachine {
 
@@ -51,12 +56,16 @@ public class InjectorMachine {
   }
 
   public Integer start() {
-    CompilationUnit tree;
     ProgressBar pb = createProgressBar("Injector", total);
     for (WorkList workList : workLists) {
+      CompilationUnit tree;
       try {
         tree = LexicalPreservingPrinter.setup(StaticJavaParser.parse(new File(workList.getUri())));
-        for (Fix fix : workList.getFixes()) {
+      } catch (FileNotFoundException exception) {
+        continue;
+      }
+      for (Fix fix : workList.getFixes()) {
+        try {
           if (Injector.LOG) {
             pb.step();
           }
@@ -64,11 +73,11 @@ public class InjectorMachine {
           if (success) {
             processed++;
           }
+        } catch (Exception ignored) {
+          logFailed(fix);
         }
-        overWriteToFile(tree, workList.getUri());
-      } catch (Exception e) {
-        failedLog(workList.className());
       }
+      overWriteToFile(tree, workList.getUri());
     }
     if (Injector.LOG) {
       pb.stepTo(total);
@@ -185,15 +194,6 @@ public class InjectorMachine {
     return success[0];
   }
 
-  private void failedLog(String className) {
-    if (Injector.LOG) {
-      System.out.print("\u001B[31m");
-      System.out.printf("Processing: %-90s", Helper.simpleName(className));
-      System.out.println("✘ (Skipped)");
-      System.out.print("\u001B[0m");
-    }
-  }
-
   public ProgressBar createProgressBar(String task, int steps) {
     return new ProgressBar(
         task,
@@ -208,5 +208,26 @@ public class InjectorMachine {
         ChronoUnit.SECONDS,
         0L,
         Duration.ZERO);
+  }
+
+  @SuppressWarnings("ALL")
+  private void logFailed(Fix fix) {
+    final String path = "/tmp/NullAwayFix/failed.json";
+    JSONObject json = null;
+    try {
+      json = (JSONObject) new JSONParser().parse(new FileReader(path));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    assert json != null;
+    JSONArray all = (JSONArray) json.get("fixes");
+    all.add(fix.getJson());
+    JSONObject toWrite = new JSONObject();
+    toWrite.put("fixes", all);
+    try {
+      Files.write(Paths.get(path), toWrite.toJSONString().getBytes());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 }
