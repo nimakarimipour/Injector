@@ -20,6 +20,8 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.function.Predicate;
+
 import me.tongfei.progressbar.ProgressBar;
 import me.tongfei.progressbar.ProgressBarStyle;
 import org.json.simple.JSONArray;
@@ -116,21 +118,18 @@ public class InjectorMachine {
       NodeWithAnnotations<?> node, String annotName, boolean inject) {
     final String annotSimpleName = Helper.simpleName(annotName);
     NodeList<AnnotationExpr> annots = node.getAnnotations();
-    AnnotationExpr existingAnnot = null;
-    boolean exists = false;
-    for (AnnotationExpr annot : annots) {
+    boolean exists = annots.stream().anyMatch(annot -> {
       String thisAnnotName = annot.getNameAsString();
-      if (thisAnnotName.equals(annotName) || thisAnnotName.equals(annotSimpleName)) {
-        exists = true;
-        existingAnnot = annot;
-      }
+      return thisAnnotName.equals(annotName) || thisAnnotName.equals(annotSimpleName);
+    });
+    if(inject && !exists){
+      node.addMarkerAnnotation(annotSimpleName);
     }
-    if (inject) {
-      if (!exists) {
-        node.addMarkerAnnotation(annotSimpleName);
-      }
-    } else {
-      annots.remove(existingAnnot);
+    if(!inject){
+      annots.removeIf(annot -> {
+        String thisAnnotName = annot.getNameAsString();
+        return thisAnnotName.equals(annotName) || thisAnnotName.equals(annotSimpleName);
+      });
     }
   }
 
