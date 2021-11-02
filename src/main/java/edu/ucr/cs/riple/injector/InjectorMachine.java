@@ -116,21 +116,23 @@ public class InjectorMachine {
       NodeWithAnnotations<?> node, String annotName, boolean inject) {
     final String annotSimpleName = Helper.simpleName(annotName);
     NodeList<AnnotationExpr> annots = node.getAnnotations();
-    AnnotationExpr existingAnnot = null;
-    boolean exists = false;
-    for (AnnotationExpr annot : annots) {
-      String thisAnnotName = annot.getNameAsString();
-      if (thisAnnotName.equals(annotName) || thisAnnotName.equals(annotSimpleName)) {
-        exists = true;
-        existingAnnot = annot;
-      }
+    boolean exists =
+        annots
+            .stream()
+            .anyMatch(
+                annot -> {
+                  String thisAnnotName = annot.getNameAsString();
+                  return thisAnnotName.equals(annotName) || thisAnnotName.equals(annotSimpleName);
+                });
+    if (inject && !exists) {
+      node.addMarkerAnnotation(annotSimpleName);
     }
-    if (inject) {
-      if (!exists) {
-        node.addMarkerAnnotation(annotSimpleName);
-      }
-    } else {
-      annots.remove(existingAnnot);
+    if (!inject) {
+      annots.removeIf(
+          annot -> {
+            String thisAnnotName = annot.getNameAsString();
+            return thisAnnotName.equals(annotName) || thisAnnotName.equals(annotSimpleName);
+          });
     }
   }
 
