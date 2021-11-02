@@ -21,12 +21,8 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 
-    implementation group: 'com.github.javaparser', name:'javaparser-symbol-solver-core', version:"${javaparser}"
-    testImplementation group: 'com.github.javaparser', name:'javaparser-symbol-solver-core', version:"${javaparser}"
     implementation group: 'com.github.javaparser', name:'javaparser-core', version:"${javaparser}"
     testImplementation group: 'com.github.javaparser', name:'javaparser-core', version:"${javaparser}"
-    implementation group: 'com.github.javaparser', name:'javaparser-core-serialization', version:"${javaparser}"
-    testImplementation group: 'com.github.javaparser', name:'javaparser-core-serialization', version:"${javaparser}"
 
     implementation group: 'com.googlecode.json-simple', name:'json-simple', version:"${json}"
     testImplementation group: 'com.googlecode.json-simple', name:'json-simple', version:"${json}"

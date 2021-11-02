@@ -11,6 +11,7 @@ import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -55,29 +56,28 @@ public class InjectorMachine {
   }
 
   public Integer start() {
-    CompilationUnit tree;
-    ProgressBar pb = createProgressBar(total);
-    Fix theFix = null;
+    ProgressBar pb = createProgressBar("Injector", total);
     for (WorkList workList : workLists) {
+      CompilationUnit tree;
       try {
         tree = LexicalPreservingPrinter.setup(StaticJavaParser.parse(new File(workList.getUri())));
-        for (Fix fix : workList.getFixes()) {
-          theFix = fix;
+      } catch (FileNotFoundException exception) {
+        continue;
+      }
+      for (Fix fix : workList.getFixes()) {
+        try {
           if (Injector.LOG) {
             pb.step();
           }
           boolean success = applyFix(tree, fix);
           if (success) {
             processed++;
-          } else {
-            logFailed(fix);
           }
+        } catch (Exception ignored) {
+          logFailed(fix);
         }
-        overWriteToFile(tree, workList.getUri());
-      } catch (Exception e) {
-        failedLog(workList.className());
-        logFailed(theFix);
       }
+      overWriteToFile(tree, workList.getUri());
     }
     if (Injector.LOG) {
       pb.stepTo(total);
@@ -194,18 +194,9 @@ public class InjectorMachine {
     return success[0];
   }
 
-  private void failedLog(String className) {
-    if (Injector.LOG) {
-      System.out.print("\u001B[31m");
-      System.out.printf("Processing: %-90s", Helper.simpleName(className));
-      System.out.println("✘ (Skipped)");
-      System.out.print("\u001B[0m");
-    }
-  }
-
-  private ProgressBar createProgressBar(int steps) {
+  public ProgressBar createProgressBar(String task, int steps) {
     return new ProgressBar(
-        "Injector",
+        task,
         steps,
         1000,
         System.out,
