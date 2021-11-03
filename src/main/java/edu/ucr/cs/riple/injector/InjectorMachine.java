@@ -9,6 +9,9 @@ import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
+import com.github.javaparser.printer.DefaultPrettyPrinter;
+import com.github.javaparser.printer.configuration.DefaultPrinterConfiguration;
+import com.github.javaparser.printer.configuration.PrinterConfiguration;
 import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -30,13 +33,18 @@ public class InjectorMachine {
 
   List<WorkList> workLists;
   Injector.MODE mode;
+  boolean keep;
   int processed = 0;
   int total = 0;
+  final DefaultPrettyPrinter printer;
 
-  public InjectorMachine(List<WorkList> workLists, Injector.MODE mode) {
+  public InjectorMachine(List<WorkList> workLists, Injector.MODE mode, boolean keep) {
     this.workLists = workLists;
     this.mode = mode;
+    this.keep = keep;
     workLists.forEach(workList -> total += workList.getFixes().size());
+    PrinterConfiguration configuration = new DefaultPrinterConfiguration();
+    printer = new DefaultPrettyPrinter(configuration);
   }
 
   private void overWriteToFile(CompilationUnit changed, String uri) {
@@ -47,7 +55,8 @@ public class InjectorMachine {
     try {
       Files.createDirectories(Paths.get(pathToFileDirectory + "/"));
       FileWriter writer = new FileWriter(uri);
-      writer.write(LexicalPreservingPrinter.print(changed));
+      String toWrite = keep ? LexicalPreservingPrinter.print(changed) : printer.print(changed);
+      writer.write(toWrite);
       writer.flush();
       writer.close();
     } catch (IOException e) {
@@ -60,7 +69,8 @@ public class InjectorMachine {
     for (WorkList workList : workLists) {
       CompilationUnit tree;
       try {
-        tree = LexicalPreservingPrinter.setup(StaticJavaParser.parse(new File(workList.getUri())));
+        CompilationUnit tmp = StaticJavaParser.parse(new File(workList.getUri()));
+        tree = keep ? LexicalPreservingPrinter.setup(tmp) : tmp;
       } catch (FileNotFoundException exception) {
         continue;
       }

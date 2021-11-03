@@ -4,6 +4,7 @@ import java.util.List;
 
 public class Injector {
   public final MODE mode;
+  public final boolean KEEP;
   public static boolean LOG;
 
   public enum MODE {
@@ -11,8 +12,9 @@ public class Injector {
     TEST
   }
 
-  public Injector(MODE mode) {
+  public Injector(MODE mode, boolean keepStyle) {
     this.mode = mode;
+    this.KEEP = keepStyle;
   }
 
   public static InjectorBuilder builder() {
@@ -25,7 +27,7 @@ public class Injector {
     for (WorkList workList : workLists) {
       report.totalNumberOfDistinctFixes += workList.getFixes().size();
     }
-    report.processed = new InjectorMachine(workLists, mode).start();
+    report.processed = new InjectorMachine(workLists, mode, KEEP).start();
     return report;
   }
 
@@ -35,14 +37,20 @@ public class Injector {
 
   public static class InjectorBuilder {
     private MODE mode = MODE.BATCH;
+    private boolean keepStyle = false;
 
     public InjectorBuilder setMode(MODE mode) {
       this.mode = mode;
       return this;
     }
 
+    public InjectorBuilder keepStyle(boolean keep) {
+      this.keepStyle = keep;
+      return this;
+    }
+
     public Injector build() {
-      return new Injector(mode);
+      return new Injector(mode, keepStyle);
     }
   }
 }

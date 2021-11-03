@@ -51,8 +51,8 @@ public class InjectorTestHelper {
     return this;
   }
 
-  public void start(boolean log) {
-    Injector injector = Injector.builder().setMode(Injector.MODE.TEST).build();
+  public void start(boolean keepStyle) {
+    Injector injector = Injector.builder().setMode(Injector.MODE.TEST).keepStyle(keepStyle).build();
     writeFixes();
     Report report =
         injector.start(new WorkListBuilder(rootPath + "/fix/fixes.json").getWorkLists());
@@ -68,7 +68,7 @@ public class InjectorTestHelper {
   }
 
   public void start() {
-    this.start(false);
+    start(false);
   }
 
   private void writeFixes() {

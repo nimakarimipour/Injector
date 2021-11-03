@@ -337,7 +337,7 @@ public class BasicTest {
                 "com.uber.Super",
                 "Super.java",
                 "true"))
-        .start();
+        .start(true);
   }
 
   @Test
