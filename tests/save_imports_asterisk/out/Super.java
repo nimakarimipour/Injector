@@ -12,7 +12,10 @@ import static com.ibm.wala.types.I;
 import static com.ibm.wala.types.J;
 import static com.ibm.wala.types.K;
 import static com.ibm.wala.types.L;
+
 import com.ibm.wala.util.A;
+import com.ibm.wala.util.AA;
+import com.ibm.wala.util.AB;
 import com.ibm.wala.util.B;
 import com.ibm.wala.util.C;
 import com.ibm.wala.util.D;
@@ -26,7 +29,6 @@ import com.ibm.wala.util.K;
 import com.ibm.wala.util.L;
 import com.ibm.wala.util.M;
 import com.ibm.wala.util.N;
-import com.ibm.wala.util.O;
 import com.ibm.wala.util.P;
 import com.ibm.wala.util.Q;
 import com.ibm.wala.util.R;
@@ -38,68 +40,66 @@ import com.ibm.wala.util.W;
 import com.ibm.wala.util.X;
 import com.ibm.wala.util.Y;
 import com.ibm.wala.util.Z;
-import com.ibm.wala.util.AA;
-import com.ibm.wala.util.AB;
 import javax.annotation.Nullable;
 
 public class Super {
 
-    A a = new A();
+  A a = new A();
 
-    B b = new B();
+  B b = new B();
 
-    C c = new C();
+  C c = new C();
 
-    D d = new D();
+  D d = new D();
 
-    E e = new E();
+  E e = new E();
 
-    F f = new F();
+  F f = new F();
 
-    G g = new G();
+  G g = new G();
 
-    H h = new H();
+  H h = new H();
 
-    I i = new I();
+  I i = new I();
 
-    J j = new J();
+  J j = new J();
 
-    K k = new K();
+  K k = new K();
 
-    L l = new L();
+  L l = new L();
 
-    M m = new M();
+  M m = new M();
 
-    N n = new N();
+  N n = new N();
 
-    P p = new P();
+  P p = new P();
 
-    Q q = new Q();
+  Q q = new Q();
 
-    R r = new R();
+  R r = new R();
 
-    S s = new S();
+  S s = new S();
 
-    T t = new T();
+  T t = new T();
 
-    U u = new U();
+  U u = new U();
 
-    V v = new V();
+  V v = new V();
 
-    W w = new W();
+  W w = new W();
 
-    X x = new X();
+  X x = new X();
 
-    Y y = new Y();
+  Y y = new Y();
 
-    Z z = new Z();
+  Z z = new Z();
 
-    AA aa = new AA();
+  AA aa = new AA();
 
-    AB ab = new AB();
+  AB ab = new AB();
 
-    @Nullable
-    Object test() {
-        return new Object();
-    }
+  @Nullable
+  Object test() {
+    return new Object();
+  }
 }

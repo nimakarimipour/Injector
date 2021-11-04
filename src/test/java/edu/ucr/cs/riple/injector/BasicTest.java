@@ -914,6 +914,7 @@ public class BasicTest {
         .expectOutput(
             "Super.java",
             "package com.uber;",
+            "import javax.annotation.Nullable;",
             "import static com.ibm.wala.types.TypeName.ArrayMask;",
             "import static com.ibm.wala.types.TypeName.ElementBits;",
             "import static com.ibm.wala.types.TypeName.PrimitiveMask;",
@@ -921,7 +922,6 @@ public class BasicTest {
             "import com.ibm.wala.util.collections.HashMapFactory;",
             "import java.io.Serializable;",
             "import java.util.Map;",
-            "import javax.annotation.Nullable;",
             "public class Super {",
             "   @Nullable Object test() {",
             "       return new Object();",
@@ -1022,6 +1022,7 @@ public class BasicTest {
         .expectOutput(
             "Super.java",
             "package com.uber;",
+            "import javax.annotation.Nullable;",
             "import static com.ibm.wala.types.A;",
             "import static com.ibm.wala.types.B;",
             "import static com.ibm.wala.types.C;",
@@ -1062,7 +1063,6 @@ public class BasicTest {
             "import com.ibm.wala.util.Z;",
             "import com.ibm.wala.util.AA;",
             "import com.ibm.wala.util.AB;",
-            "import javax.annotation.Nullable;",
             "public class Super {",
             "   A a = new A();",
             "   B b = new B();",

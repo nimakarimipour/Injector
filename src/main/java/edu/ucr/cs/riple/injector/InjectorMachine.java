@@ -2,6 +2,7 @@ package edu.ucr.cs.riple.injector;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.Parameter;
@@ -116,7 +117,11 @@ public class InjectorMachine {
     }
     if (success) {
       if (Helper.getPackageName(fix.annotation) != null) {
-        tree.addImport(fix.annotation);
+        ImportDeclaration importDeclaration =
+            StaticJavaParser.parseImport("import " + fix.annotation + ";");
+        if (!tree.getImports().contains(importDeclaration)) {
+          tree.getImports().addFirst(importDeclaration);
+        }
       }
     }
     return success;

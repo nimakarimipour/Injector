@@ -4,15 +4,15 @@ import javax.annotation.Nullable;
 
 public class Super {
 
-    @Nullable
-    Object test() {
-        return new Object();
-    }
+  @Nullable
+  Object test() {
+    return new Object();
+  }
 
-    class SuperInner {
+  class SuperInner {
 
-        Object bar(@Nullable Object foo) {
-            return foo;
-        }
+    Object bar(@Nullable Object foo) {
+      return foo;
     }
+  }
 }
