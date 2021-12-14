@@ -83,7 +83,7 @@ public class InjectorMachine {
           boolean success = applyFix(tree, fix);
           if (success) {
             processed++;
-          }else{
+          } else {
             logFailed(fix);
           }
         } catch (Exception ignored) {
