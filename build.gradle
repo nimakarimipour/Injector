@@ -13,7 +13,7 @@ repositories {
 }
 
 ext{
-    javaparser = '3.23.1'
+    javaparser = '3.23.2-SNAPSHOT'
     json = '1.1.1'
 }
 
