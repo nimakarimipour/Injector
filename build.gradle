@@ -13,13 +13,13 @@ repositories {
 }
 
 ext{
-    javaparser = '3.23.2-SNAPSHOT'
+    javaparser = '3.24.0'
     json = '1.1.1'
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 
     implementation group: 'com.github.javaparser', name:'javaparser-core', version:"${javaparser}"
     testImplementation group: 'com.github.javaparser', name:'javaparser-core', version:"${javaparser}"
@@ -32,3 +32,8 @@ dependencies {
 }
 
 compileJava.mustRunAfter verifyGoogleJavaFormat
+
+googleJavaFormat {
+    // don't enforce formatting for generated Java code under buildSrc
+    exclude 'tests/**/*.java'
+}

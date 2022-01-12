@@ -1321,70 +1321,48 @@ public class BasicTest {
         .start();
   }
 
-  //  @Test
-  //  public void simple_array_bracket_preservation() {
-  //    String rootName = "remove_annot_field";
-  //    new InjectorTestHelper()
-  //            .setRootPath(System.getProperty("user.dir") + "/tests/" + rootName)
-  //            .addInput(
-  //                    "A.java",
-  //                    "package com.uber;",
-  //                    "public class A {",
-  //                    "   private Object[] allTest;",
-  //                    "}")
-  //            .expectOutput(
-  //                    "A.java",
-  //                    "package com.uber;",
-  //                    "import javax.annotation.Nullable;",
-  //                    "public class A {",
-  //                    "   @Nullable",
-  //                    "   private Object[] allTest;",
-  //                    "}")
-  //            .addInput(
-  //                    "B.java",
-  //                    "package com.uber;",
-  //                    "public class B {",
-  //                    "   private Object allTest[];",
-  //                    "}")
-  //            .expectOutput(
-  //                    "B.java",
-  //                    "package com.uber;",
-  //                    "import javax.annotation.Nullable;",
-  //                    "public class B {",
-  //                    "   @Nullable",
-  //                    "   private Object allTest[];",
-  //                    "}")
-  //            .addFixes(
-  //                    new Fix(
-  //                            "javax.annotation.Nullable",
-  //                            "",
-  //                            "allTest",
-  //                            "CLASS_FIELD",
-  //                            "com.uber.B",
-  //                            "com.uber",
-  //                            "B.java",
-  //                            "true"),
-  //                    new Fix(
-  //                            "javax.annotation.Nullable",
-  //                            "",
-  //                            "allTest",
-  //                            "CLASS_FIELD",
-  //                            "com.uber.A",
-  //                            "com.uber",
-  //                            "A.java",
-  //                            "true")
-  //            )
-  //            .start();
-  //  }
+  @Test
+  public void simple_array_bracket_preservation() {
+    String rootName = "remove_annot_field";
+    new InjectorTestHelper()
+        .setRootPath(System.getProperty("user.dir") + "/tests/" + rootName)
+        .addInput(
+            "A.java", "package com.uber;", "public class A {", "   private Object[] allTest;", "}")
+        .expectOutput(
+            "A.java",
+            "package com.uber;",
+            "import javax.annotation.Nullable;",
+            "public class A {",
+            "   @Nullable",
+            "   private Object[] allTest;",
+            "}")
+        .addInput(
+            "B.java", "package com.uber;", "public class B {", "   private Object allTest[];", "}")
+        .expectOutput(
+            "B.java",
+            "package com.uber;",
+            "import javax.annotation.Nullable;",
+            "public class B {",
+            "   @Nullable",
+            "   private Object allTest[];",
+            "}")
+        .addFixes(
+            new Fix(
+                "javax.annotation.Nullable",
+                "",
+                "allTest",
+                "CLASS_FIELD",
+                "com.uber.B",
+                "B.java",
+                "true"),
+            new Fix(
+                "javax.annotation.Nullable",
+                "",
+                "allTest",
+                "CLASS_FIELD",
+                "com.uber.A",
+                "A.java",
+                "true"))
+        .start(true);
+  }
 }
-
-// todo: test these later:
-
-//  For method pick (multiple Generics)
-//  public <A extends AbstractValue<A>, S extends Store<S>, T extends TransferFunction<A, S>>
-//  S test(TransferFunction<A, S> s, Context context, T transfer);
-
-// For method pick (For Generics as argument)
-// ArrayList<String> vs ArrayList<Object>
-//  For method pick (For Class<T> as argument
-//  public static <T extends Shape> void drawWithShadow(T shape, Class<T> shapeClass);

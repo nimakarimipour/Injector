@@ -4,12 +4,13 @@ import javax.annotation.Nullable;
 
 public class Main {
 
-  public enum Test {
-    CLASSIC;
+    public enum Test {
 
-    @Nullable
-    public Object run() {
-      return null;
+        CLASSIC;
+
+        @Nullable
+        public Object run() {
+            return null;
+        }
     }
-  }
 }
