@@ -81,9 +81,10 @@ public class InjectorMachine {
             pb.step();
           }
           boolean success = applyFix(tree, fix);
-          if (success) {
+          if (success && Injector.LOG) {
             processed++;
-          }else{
+            logSuccessful(fix);
+          } else {
             logFailed(fix);
           }
         } catch (Exception ignored) {
@@ -232,12 +233,28 @@ public class InjectorMachine {
   @SuppressWarnings("ALL")
   private void logFailed(Fix fix) {
     final String path = "/tmp/NullAwayFix/failed.json";
-    JSONObject json = null;
+    appendAFix(fix, path);
+  }
+
+  private void logSuccessful(Fix fix) {
+    final String path = "/tmp/NullAwayFix/injected.json";
+    appendAFix(fix, path);
+  }
+
+  private void appendAFix(Fix fix, String path) {
+    JSONObject json;
     try {
+      File file = new File(path);
+      if (!file.exists()) {
+        if (!file.createNewFile()) {
+          throw new RuntimeException("Could not create a new file at path: " + path);
+        }
+      }
       json = (JSONObject) new JSONParser().parse(new FileReader(path));
     } catch (Exception e) {
-      e.printStackTrace();
+      throw new RuntimeException(e);
     }
+    assert new File(path).exists();
     assert json != null;
     JSONArray all = (JSONArray) json.get("fixes");
     all.add(fix.getJson());

@@ -13,7 +13,7 @@ repositories {
 }
 
 ext{
-    javaparser = '3.23.1'
+    javaparser = '3.24.0'
     json = '1.1.1'
 }
 
@@ -32,3 +32,20 @@ dependencies {
 }
 
 compileJava.mustRunAfter verifyGoogleJavaFormat
+
+
+configurations.implementation.canBeResolved = true
+
+task fatJar(type: Jar) {
+    zip64 true
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',
+                'Implementation-Version': version,
+                'Main-Class': 'Main'
+    }
+    from { configurations.implementation.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+    exclude 'META-INF/*.RSA'
+    exclude 'META-INF/*.SF'
+    exclude 'META-INF/*.DSA'
+}
