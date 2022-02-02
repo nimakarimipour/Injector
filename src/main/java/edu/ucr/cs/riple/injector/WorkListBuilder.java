@@ -9,6 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -20,10 +22,26 @@ public class WorkListBuilder {
 
   public WorkListBuilder(String filePath) {
     this.filePath = filePath;
-    readFixes();
+    if(filePath.endsWith(".json")){
+      readFixesJson();
+    }else{
+      readCSV();
+    }
+
   }
 
-  private void readFixes() {
+  private void readCSV() {
+    try{
+      List<String> lines = Files.readAllLines(Paths.get(filePath),
+              Charset.defaultCharset());
+      fixes = new ArrayList<>();
+      lines.forEach(s -> fixes.add(Fix.fromCSVLine(s, "$*$")));
+    }catch (IOException e){
+      throw new RuntimeException(e);
+    }
+  }
+
+  private void readFixesJson() {
     try {
       BufferedReader bufferedReader =
           Files.newBufferedReader(Paths.get(filePath), Charset.defaultCharset());

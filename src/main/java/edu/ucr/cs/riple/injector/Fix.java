@@ -200,10 +200,10 @@ public class Fix {
   }
 
   public static Fix fromArrayInfo(String[] infos) {
-    Fix fix = new Fix(infos[8], infos[3], infos[4], infos[0], infos[2], infos[6], infos[10]);
-    fix.pkg = infos[1];
-    fix.compulsory = infos[9];
-    fix.index = infos[5];
+    Fix fix = new Fix(infos[7], infos[2], infos[3], infos[0], infos[1], infos[5], infos[8]);
+    fix.pkg = fix.className.substring(0, fix.className.lastIndexOf("."));
+    fix.compulsory = "true";
+    fix.index = infos[4];
     return fix;
   }
 }
