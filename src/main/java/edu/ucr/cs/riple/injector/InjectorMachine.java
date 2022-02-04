@@ -29,6 +29,7 @@ import me.tongfei.progressbar.ProgressBarStyle;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class InjectorMachine {
 
@@ -250,9 +251,18 @@ public class InjectorMachine {
           throw new RuntimeException("Could not create a new file at path: " + path);
         }
       }
+      if(file.length() == 0){
+        JSONArray fixes = new JSONArray();
+        JSONObject ans = new JSONObject();
+        ans.put("fixes", fixes);
+        FileWriter w = new FileWriter(path);
+        w.write(ans.toJSONString());
+        w.close();
+      }
       json = (JSONObject) new JSONParser().parse(new FileReader(path));
-    } catch (Exception e) {
-      throw new RuntimeException(e);
+    }
+    catch (Exception e) {
+      throw new RuntimeException(path, e);
     }
     assert new File(path).exists();
     assert json != null;
