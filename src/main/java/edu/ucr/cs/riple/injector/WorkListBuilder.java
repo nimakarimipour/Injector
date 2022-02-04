@@ -35,7 +35,7 @@ public class WorkListBuilder {
       List<String> lines = Files.readAllLines(Paths.get(filePath),
               Charset.defaultCharset());
       fixes = new ArrayList<>();
-      lines.forEach(s -> fixes.add(Fix.fromCSVLine(s, "$*$")));
+      lines.forEach(s -> fixes.add(Fix.fromCSVLine(s, "(\\$\\*\\$)")));
     }catch (IOException e){
       throw new RuntimeException(e);
     }
