@@ -29,7 +29,6 @@ import me.tongfei.progressbar.ProgressBarStyle;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 public class InjectorMachine {
 
@@ -103,8 +102,7 @@ public class InjectorMachine {
 
   private boolean applyFix(CompilationUnit tree, Fix fix) {
     boolean success = false;
-    TypeDeclaration<?> clazz =
-        Helper.getClassOrInterfaceOrEnumDeclaration(tree, fix.pkg, fix.className);
+    TypeDeclaration<?> clazz = Helper.getClassOrInterfaceOrEnumDeclaration(tree, fix.className);
     if (clazz == null) {
       return false;
     }
@@ -251,7 +249,7 @@ public class InjectorMachine {
           throw new RuntimeException("Could not create a new file at path: " + path);
         }
       }
-      if(file.length() == 0){
+      if (file.length() == 0) {
         JSONArray fixes = new JSONArray();
         JSONObject ans = new JSONObject();
         ans.put("fixes", fixes);
@@ -260,8 +258,7 @@ public class InjectorMachine {
         w.close();
       }
       json = (JSONObject) new JSONParser().parse(new FileReader(path));
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       throw new RuntimeException(path, e);
     }
     assert new File(path).exists();

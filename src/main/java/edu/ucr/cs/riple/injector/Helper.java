@@ -68,8 +68,9 @@ public class Helper {
   }
 
   public static TypeDeclaration<?> getClassOrInterfaceOrEnumDeclaration(
-      CompilationUnit cu, String pkg, String name) {
+      CompilationUnit cu, String name) {
     String classSimpleName = simpleName(name);
+    String pkg = cu.getPackageDeclaration().get().getName().asString();
     if (pkg.equals(getPackageName(name))) {
       Optional<ClassOrInterfaceDeclaration> optional = cu.getClassByName(classSimpleName);
       if (!optional.isPresent()) {
